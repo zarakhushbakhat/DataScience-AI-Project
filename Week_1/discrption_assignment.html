@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Titanic Project — Setup & Upload Steps</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; line-height:1.5; margin:24px; color:#111; background:#f7f9fc; }
+    .container { max-width:900px; margin:0 auto; background:#fff; padding:28px; border-radius:10px; box-shadow:0 6px 20px rgba(20,30,60,0.08); }
+    h1 { margin-top:0; color:#0b57a4; }
+    h2 { color:#0b57a4; margin-bottom:6px; }
+    p.lead { color:#334155; }
+    ol.steps { padding-left:1.1rem; }
+    li.step { margin:14px 0; }
+    pre.cmd { background:#0f1724; color:#e6eef8; padding:12px; border-radius:6px; overflow:auto; font-size:0.95rem; }
+    .note { background:#eef2ff; border-left:4px solid #6366f1; padding:10px 12px; border-radius:6px; color:#0f1724; margin:10px 0; }
+    footer { margin-top:22px; font-size:0.9rem; color:#64748b; }
+    a { color:#0b57a4; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .section { margin-bottom:20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Titanic Project — Setup & Upload Steps</h1>
+    <p class="lead">This page lists the complete step-by-step workflow you requested: install Python, install Jupyter, install libraries, prepare the Titanic dataset, run the notebook, and upload the project to GitHub. Follow each step in order.</p>
+
+    <div class="section">
+      <h2>1. Install Python</h2>
+      <ol class="steps">
+        <li class="step">Open <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a> and download the latest stable <strong>Python 3.x</strong> installer for your OS.</li>
+        <li class="step">Run the installer and be sure to <strong>check “Add Python to PATH”</strong> during installation.</li>
+        <li class="step">Verify installation in a terminal / command prompt:
+          <pre class="cmd">python --version</pre>
+          or on Windows you can try:
+          <pre class="cmd">py --version</pre>
+        </li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>2. Install Jupyter Notebook</h2>
+      <ol class="steps">
+        <li class="step">Open your terminal or command prompt.</li>
+        <li class="step">Install Jupyter with pip:
+          <pre class="cmd">pip install notebook</pre>
+        </li>
+        <li class="step">Launch Jupyter in the folder where you will work:
+          <pre class="cmd">jupyter notebook</pre>
+          This opens a browser where you can create and run notebooks (`.ipynb`).
+        </li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>3. (Optional) Install VS Code and Extensions</h2>
+      <ol class="steps">
+        <li class="step">Download VS Code from <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>.</li>
+        <li class="step">Install these extensions from the Extensions panel in VS Code:
+          <ul>
+            <li><strong>Python</strong> (by Microsoft)</li>
+            <li><strong>Jupyter</strong> (by Microsoft)</li>
+            <li><strong>Pylance</strong> (optional — improved IntelliSense)</li>
+          </ul>
+        </li>
+        <li class="step">You can open and run `.ipynb` notebooks directly inside VS Code after selecting the proper Python kernel (top-right of the notebook view).</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>4. Install Required Python Libraries</h2>
+      <p>Install the libraries used in the Titanic example and general data work:</p>
+      <pre class="cmd">pip install pandas numpy matplotlib seaborn tabulate</pre>
+      <p class="note">If you see a <code>ModuleNotFoundError</code> when running code, install the missing library with <code>pip install &lt;library-name&gt;</code>.</p>
+    </div>
+
+    <div class="section">
+      <h2>5. Get the Titanic Dataset</h2>
+      <ol class="steps">
+        <li class="step">You can use the built-in Titanic dataset from <code>seaborn</code> or download a CSV from Kaggle:
+          <ul>
+            <li>Kaggle Titanic: <a href="https://www.kaggle.com/c/titanic/data" target="_blank">https://www.kaggle.com/c/titanic/data</a></li>
+          </ul>
+        </li>
+        <li class="step">If you download <code>titanic.csv</code>, save it to your project folder (e.g. <code>F:\semester 7\Titanic-Project\titanic.csv</code>).</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>6. Create Your Project Files</h2>
+      <ol class="steps">
+        <li class="step">Open Jupyter or VS Code and create a new notebook named <code>titanic_analysis.ipynb</code>.</li>
+        <li class="step">Add code cells to load the data, show column descriptions, preview the table, and add basic plots — run cells to verify outputs.</li>
+        <li class="step">Save your notebook in the project folder.</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>7. Run & Test</h2>
+      <ol class="steps">
+        <li class="step">Start Jupyter in the project folder:
+          <pre class="cmd">jupyter notebook</pre>
+        </li>
+        <li class="step">Open <code>titanic_analysis.ipynb</code> and run all cells. Confirm outputs (data preview, plots) show correctly.</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>8. Prepare to Upload to GitHub</h2>
+      <ol class="steps">
+        <li class="step">If you don't have a GitHub account, create one at <a href="https://github.com/" target="_blank">github.com</a>.</li>
+        <li class="step">Create a new repository on GitHub (example name: <code>Titanic-Data-Analysis</code>).</li>
+        <li class="step">Do NOT initialize with README on GitHub if you already have files locally (optional).</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>9. Upload Local Project to GitHub (Command Line)</h2>
+      <p>Open your terminal in your project folder and run:</p>
+      <pre class="cmd">git init
+git branch -M main
+git add .
+git commit -m "Initial commit: Titanic analysis"
+git remote add origin https://github.com/yourusername/Titanic-Data-Analysis.git
+git push -u origin main</pre>
+      <p class="note">If Git asks for credentials when pushing, enter your GitHub username and a <strong>Personal Access Token (PAT)</strong> as the password (GitHub no longer accepts account passwords for command-line push).</p>
+    </div>
+
+    <div class="section">
+      <h2>10. Alternative: Upload Manually via GitHub Website</h2>
+      <ol class="steps">
+        <li class="step">Go to your repository page → click <strong>Add file → Upload files</strong>.</li>
+        <li class="step">Drag & drop your notebook and small files. Commit changes.</li>
+        <li class="step">Note: GitHub web UI limits single file uploads (about 25 MB per file). For large files use Git LFS or cloud storage.</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>11. If You Have Large Files</h2>
+      <ol class="steps">
+        <li class="step">For files over 100 MB, do not push to GitHub. Instead upload large datasets to Google Drive / Dropbox / OneDrive and include download links in your README.</li>
+        <li class="step">For files under 100 MB but large, use Git LFS: <pre class="cmd">git lfs install
+git lfs track "*.csv"
+git add .gitattributes
+git add &lt;large files&gt;
+git commit -m "Track large files with LFS"
+git push -u origin main</pre></li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2>12. Create a README</h2>
+      <ol class="steps">
+        <li class="step">Create a file named <code>README.md</code> with a short project description, dataset links (if hosted externally), and how to run the notebook.</li>
+        <li class="step">Add, commit, and push the README to GitHub:
+          <pre class="cmd">git add README.md
+git commit -m "Add README"
+git push</pre>
+        </li>
+      </ol>
+    </div>
+
+    <footer>
+      <p>That’s it — follow these steps in order and your Titanic project will be set up locally and uploaded to GitHub. If you want, I can generate a ready-to-paste <strong>README.md</strong> or provide the notebook file text next.</p>
+    </footer>
+  </div>
+</body>
+</html>
