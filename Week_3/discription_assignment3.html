@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Week 3 Assignment – Titanic Dataset (Exploratory Data Analysis)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      color: #333;
+    }
+    header {
+      background: #00796b;
+      color: #fff;
+      text-align: center;
+      padding: 25px 15px;
+    }
+    header h1 {
+      font-size: 28px;
+      margin: 0;
+    }
+    section {
+      max-width: 1000px;
+      margin: 25px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: #004d40;
+      border-left: 4px solid #00796b;
+      padding-left: 8px;
+    }
+    h3 {
+      font-size: 18px;
+      margin: 15px 0 10px;
+      color: #00695c;
+    }
+    p {
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #00796b;
+      color: #fff;
+    }
+    img {
+      display: block;
+      max-width: 90%;
+      margin: 12px auto;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+    }
+    .interpretation {
+      background: #e0f7fa;
+      border-left: 5px solid #00796b;
+      padding: 10px;
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📄 Week 3 Assignment – Titanic Dataset (Exploratory Data Analysis)</h1>
+  </header>
+
+  <section>
+    <h2>1. Introduction</h2>
+    <p>
+      The Titanic dataset is one of the most famous datasets for data analysis and machine learning. 
+      It provides demographic and survival information of passengers aboard the Titanic. 
+      In this assignment, we perform an <strong>Exploratory Data Analysis (EDA)</strong> to understand survival factors such as 
+      <strong>age, gender, class, and fare</strong>.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Dataset Information</h2>
+    <p>We begin by exploring the dataset using Pandas.</p>
+    <table>
+      <tr>
+        <th>Column Name</th><th>Non-Null Count</th><th>Missing Values</th><th>Data Type</th>
+      </tr>
+      <tr><td>survived</td><td>891</td><td>0</td><td>int64</td></tr>
+      <tr><td>pclass</td><td>891</td><td>0</td><td>int64</td></tr>
+      <tr><td>sex</td><td>891</td><td>0</td><td>object</td></tr>
+      <tr><td>age</td><td>714</td><td>177</td><td>float64</td></tr>
+      <tr><td>sibsp</td><td>891</td><td>0</td><td>int64</td></tr>
+      <tr><td>parch</td><td>891</td><td>0</td><td>int64</td></tr>
+      <tr><td>fare</td><td>891</td><td>0</td><td>float64</td></tr>
+      <tr><td>embarked</td><td>889</td><td>2</td><td>object</td></tr>
+      <tr><td>class</td><td>891</td><td>0</td><td>category</td></tr>
+      <tr><td>who</td><td>891</td><td>0</td><td>category</td></tr>
+      <tr><td>adult_male</td><td>891</td><td>0</td><td>bool</td></tr>
+      <tr><td>deck</td><td>203</td><td>688</td><td>category</td></tr>
+      <tr><td>embark_town</td><td>889</td><td>2</td><td>object</td></tr>
+      <tr><td>alive</td><td>891</td><td>0</td><td>category</td></tr>
+      <tr><td>alone</td><td>891</td><td>0</td><td>bool</td></tr>
+    </table>
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Total passengers = <b>891</b>.<br>
+      * The <code>age</code> column has <b>177 missing values</b> (714 non-null).<br>
+      * <code>deck</code> has a very high number of missing values.<br>
+      * Important categorical features include <b>sex, pclass, and embarked</b>.
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Age & Fare Statistical Summary</h2>
+    <table>
+      <tr>
+        <th>Statistic</th><th>Age</th><th>Fare</th>
+      </tr>
+      <tr><td>Count (non-null)</td><td>714</td><td>891</td></tr>
+      <tr><td>Missing</td><td>177</td><td>0</td></tr>
+      <tr><td>Mean</td><td>29.7</td><td>32.2</td></tr>
+      <tr><td>Median</td><td>28.0</td><td>14.45</td></tr>
+      <tr><td>Mode</td><td>24.0</td><td>8.05</td></tr>
+      <tr><td>Standard Deviation</td><td>14.53</td><td>49.69</td></tr>
+      <tr><td>Minimum</td><td>0.42</td><td>0.0</td></tr>
+      <tr><td>Maximum</td><td>80.0</td><td>512.33</td></tr>
+    </table>
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Average passenger age = <b>29.7 years</b>.<br>
+      * Median fare = <b>14.45</b>, but maximum = <b>512.33</b>, showing extreme inequality in ticket pricing.<br>
+      * 177 missing age values highlight incomplete passenger records.
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Charts and Interpretations</h2>
+
+    <h3>4.1 Age Distribution</h3>
+    <img src="outputs/age.png"  alt="Age Distribution">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Most passengers were <b>20–40 years old</b>.<br>
+      * Peak at around <b>24 years (mode)</b>.<br>
+      * Very few infants and elderly passengers.<br>
+      * Suggests Titanic carried a <b>young to middle-aged majority</b>.
+    </div>
+
+    <h3>4.2 Fare Distribution</h3>
+    <img src="outputs/fare.png" alt="Fare Distribution">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Most passengers paid <b>under 50 units</b>.<br>
+      * Extreme outliers with fares above <b>500</b> show <b>wealthy 1st class passengers</b>.<br>
+      * Median fare is much lower, proving Titanic mostly carried <b>economy travelers</b>.
+    </div>
+
+    <h3>4.3 Passenger Count by Class</h3>
+    <img src="outputs/passenger_class.png" alt="Passenger Count by Class">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Largest group = <b>3rd Class passengers</b>.<br>
+      * Fewest passengers = <b>1st Class</b>, but they had more privileges.<br>
+      * Highlights strong <b>social and economic diversity</b>.
+    </div>
+
+    <h3>4.4 Passenger Count by Gender</h3>
+    <img src="outputs/sex.png" alt="Passenger Count by Gender">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * More <b>males</b> than females.<br>
+      * This imbalance influenced survival analysis, as fewer women had <b>higher survival rates</b>.
+    </div>
+
+    <h3>4.5 Survival by Gender</h3>
+    <img src="outputs/survival_gender.png" alt="Survival by Gender">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * <b>Women had a much higher survival rate</b> than men.<br>
+      * Supports the “<b>women and children first</b>” rescue policy.
+    </div>
+
+    <h3>4.6 Survival by Passenger Class</h3>
+    <img src="outputs/survival_class.png" alt="Survival by Class">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * <b>1st Class passengers survived the most</b>, while <b>3rd Class passengers had the lowest survival rate</b>.<br>
+      * Wealth and social class played a critical role in survival chances.
+    </div>
+
+    <h3>4.7 Age vs Survival (Box Plot)</h3>
+    <img src="outputs/age_distribution.png" alt="Age vs Survival">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Survivors were often <b>slightly younger</b>.<br>
+      * Children had better survival chances.<br>
+      * Elderly passengers had <b>very low survival rates</b>.
+    </div>
+
+    <h3>4.8 Fare vs Survival (Box Plot)</h3>
+    <img src="outputs/fare_distribution.png" alt="Fare vs Survival">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * Survivors generally <b>paid higher fares</b>.<br>
+      * Passengers with cheaper tickets (3rd class) had a lower chance of survival.<br>
+      * Shows <b>class and wealth strongly influenced survival</b>.
+    </div>
+
+    <h3>4.9 Correlation Heatmap</h3>
+    <img src="outputs/correlation.png" alt="Correlation Heatmap">
+    <div class="interpretation">
+      📌 <strong>Interpretation:</strong><br>
+      * <b>Fare is positively correlated with survival</b> → higher ticket, higher chance.<br>
+      * <b>Sex (male) is negatively correlated with survival</b> → males survived less.<br>
+      * <b>Pclass is negatively correlated with survival</b> → lower-numbered class = better survival.<br>
+      * Age correlation is weak, but <b>children had slightly better chances</b>.
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Conclusion</h2>
+    <p>
+      From the Titanic dataset analysis, the main findings are:
+    </p>
+    <ul>
+      <li><b>Gender and Class were the most important factors in survival.</b></li>
+      <li>Women and children had higher chances.</li>
+      <li>Wealthier (1st Class) passengers survived at much higher rates.</li>
+      <li>The majority of passengers were young adults, but not all survived equally.</li>
+      <li>Fare distribution shows huge inequality, directly linked to survival chances.</li>
+    </ul>
+    <p>
+      This analysis highlights how <b>social and economic inequalities impacted survival</b> during the Titanic disaster.
+    </p>
+  </section>
+
+</body>
+</html>
