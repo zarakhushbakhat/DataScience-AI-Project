@@ -3,166 +3,265 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Titanic Project — Setup & Upload Steps</title>
+  <title>Week 1 — E-Commerce Project (Dataset Summary)</title>
   <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; line-height:1.5; margin:24px; color:#111; background:#f7f9fc; }
-    .container { max-width:900px; margin:0 auto; background:#fff; padding:28px; border-radius:10px; box-shadow:0 6px 20px rgba(20,30,60,0.08); }
-    h1 { margin-top:0; color:#0b57a4; }
-    h2 { color:#0b57a4; margin-bottom:6px; }
-    p.lead { color:#334155; }
-    ol.steps { padding-left:1.1rem; }
-    li.step { margin:14px 0; }
-    pre.cmd { background:#0f1724; color:#e6eef8; padding:12px; border-radius:6px; overflow:auto; font-size:0.95rem; }
-    .note { background:#eef2ff; border-left:4px solid #6366f1; padding:10px 12px; border-radius:6px; color:#0f1724; margin:10px 0; }
-    footer { margin-top:22px; font-size:0.9rem; color:#64748b; }
-    a { color:#0b57a4; text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .section { margin-bottom:20px; }
+    :root{
+      --bg:#f6f9fc;
+      --card:#ffffff;
+      --muted:#64748b;
+      --accent:#0b57a4;
+      --table-border:#e6eef8;
+      --header-bg:#0b57a4;
+      --header-color:#fff;
+      --maxw:1200px;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:#0f1724;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;line-height:1.55}
+    .container{max-width:var(--maxw);margin:28px auto;padding:22px}
+    .card{background:var(--card);border-radius:12px;padding:26px;border:1px solid rgba(11,87,164,0.06);box-shadow:0 10px 30px rgba(15,23,42,0.05)}
+    h1{color:var(--accent);margin:0 0 6px;font-size:1.6rem}
+    p.lead{color:var(--muted);margin-top:0;margin-bottom:18px}
+    h2{color:var(--accent);font-size:1.05rem;margin:18px 0 8px}
+    table{width:100%;border-collapse:collapse;background:#fff;margin:12px 0}
+    thead th{background:var(--header-bg);color:var(--header-color);text-align:left;padding:10px 12px;font-weight:600;border-bottom:2px solid rgba(255,255,255,0.06)}
+    tbody td{padding:10px 12px;border-top:1px solid var(--table-border);font-size:0.93rem;color:#0b1220;vertical-align:top}
+    tbody tr:nth-child(even){background:#fbfdff}
+    .small{font-size:0.88rem;color:var(--muted);margin-top:6px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:var(--accent);font-weight:600;font-size:0.86rem;border:1px solid rgba(11,87,164,0.06)}
+    .meta{font-size:0.92rem;color:var(--muted)}
+    @media (max-width:980px){.container{padding:16px}}
+    @media (max-width:760px){
+      thead th, tbody td{padding:8px}
+      .card{padding:16px}
+      .table-wide {
+  width: 100%;
+  margin: 20px 0;
+  text-align: left;
+}
+
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Titanic Project — Setup & Upload Steps</h1>
-    <p class="lead">This page lists the complete step-by-step workflow you requested: install Python, install Jupyter, install libraries, prepare the Titanic dataset, run the notebook, and upload the project to GitHub. Follow each step in order.</p>
+    <div class="card">
+      <h1>Week 1 — Applied Data Science with AI</h1>
 
-    <div class="section">
-      <h2>1. Install Python</h2>
-      <ol class="steps">
-        <li class="step">Open <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a> and download the latest stable <strong>Python 3.x</strong> installer for your OS.</li>
-        <li class="step">Run the installer and be sure to <strong>check “Add Python to PATH”</strong> during installation.</li>
-        <li class="step">Verify installation in a terminal / command prompt:
-          <pre class="cmd">python --version</pre>
-          or on Windows you can try:
-          <pre class="cmd">py --version</pre>
-        </li>
-      </ol>
+      <!-- Environment Setup -->
+      <h2>1. Environment Setup</h2>
+      <p>Before starting the assignment, we prepared the Python environment.</p>
+      <ul>
+        <li><strong>Python Version:</strong> Python 3.10+ (Anaconda or Google Colab can also be used).</li>
+        <li><strong>IDE:</strong> Jupyter Notebook / Google Colab / VS Code.</li>
+        <li><strong>Required Libraries:</strong></li>
+        <ul>
+          <li><code>pandas</code> → For dataset loading and manipulation<br>
+          <em>Install:</em> <code>pip install pandas</code></li>
+          <li><code>tabulate</code> → For displaying tables in a clean, grid format<br>
+          <em>Install:</em> <code>pip install tabulate</code></li>
+          <li>(Other built-in libraries like <code>os</code> may be used for file checking, but no extra installation required).</li>
+        </ul>
+      </ul>
+
+      <!-- Steps Performed -->
+      <h2>2. Steps Performed</h2>
+      <p><strong>Step 1: Import Libraries</strong></p>
+      <pre><code>import pandas as pd
+from tabulate import tabulate</code></pre>
+
+      <p class="lead">
+        <strong>Project:</strong> E-Commerce Recommendation System<br>
+        <strong>Dataset:</strong> Ecommerce Customer Service Satisfaction (source: 
+        <a href="https://www.kaggle.com" target="_blank" rel="noopener">Kaggle</a>)
+      </p>
+
+
+      <!-- Dataset Information -->
+      <h2>📌 Dataset Information</h2>
+      <table aria-describedby="dataset-info">
+        <thead>
+          <tr>
+            <th>Dataset Name</th>
+            <th>Total Rows</th>
+            <th>Total Columns</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Customer_support_data</td>
+            <td>85,907</td>
+            <td>20</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="small">Source: Kaggle — customer support / CSAT dataset used for satisfaction analysis and recommendation experiments.</p>
+
+      <!-- Column Descriptions -->
+      <h2>📌 Column Descriptions</h2>
+      <table>
+        <thead>
+          <tr><th>Column Name</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Unique id</td><td>Unique record identifier (UUID)</td></tr>
+          <tr><td>channel_name</td><td>Contact channel (Inbound, Outcall, Email, etc.)</td></tr>
+          <tr><td>category</td><td>High-level issue category</td></tr>
+          <tr><td>Sub-category</td><td>Sub-category or more specific issue type</td></tr>
+          <tr><td>Customer Remarks</td><td>Free-text remarks / customer comments</td></tr>
+          <tr><td>Order_id</td><td>Order identifier related to the issue (if applicable)</td></tr>
+          <tr><td>order_date_time</td><td>Date/time of order placement</td></tr>
+          <tr><td>Issue_reported at</td><td>Timestamp when issue was reported</td></tr>
+          <tr><td>issue_responded</td><td>Timestamp when agent responded</td></tr>
+          <tr><td>Survey_response_Date</td><td>Date when customer submitted the CSAT survey</td></tr>
+          <tr><td>Customer_City</td><td>City of the customer (if provided)</td></tr>
+          <tr><td>Product_category</td><td>Product category associated with the ticket</td></tr>
+          <tr><td>Item_price</td><td>Price of the item (if available)</td></tr>
+          <tr><td>connected_handling_time</td><td>Call/chat handling duration (seconds/mins)</td></tr>
+          <tr><td>Agent_name</td><td>Name of the handling agent</td></tr>
+          <tr><td>Supervisor</td><td>Supervisor overseeing the agent</td></tr>
+          <tr><td>Manager</td><td>Manager in chain of command</td></tr>
+          <tr><td>Tenure Bucket</td><td>Agent tenure category (e.g., 0-30, >90)</td></tr>
+          <tr><td>Agent Shift</td><td>Shift of the agent (Morning/Evening/Split)</td></tr>
+          <tr><td>CSAT Score</td><td>Customer satisfaction score (e.g., 1–5)</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Sample (first 10 rows) -->
+<h2>📌 Dataset Sample (First 10 Rows)</h2>
+<div style="overflow-x:auto;">
+  <table class="table-wide">
+    <thead>
+    <tr>
+      <th>S.No.</th>
+      <th>Unique id</th><th>channel_name</th><th>category</th><th>Sub-category</th>
+      <th>Customer Remarks</th><th>Order_id</th><th>order_date_time</th><th>Issue_reported at</th>
+      <th>issue_responded</th><th>Survey_response_Date</th><th>Customer_City</th><th>Product_category</th>
+      <th>Item_price</th><th>connected_handling_time</th><th>Agent_name</th><th>Supervisor</th>
+      <th>Manager</th><th>Tenure Bucket</th><th>Agent Shift</th><th>CSAT Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td><td>Outcall</td><td>Product Queries</td><td>Life Insurance</td>
+      <td>nan</td><td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td><td>nan</td><td>01/08/2023 11:13</td>
+      <td>01/08/2023 11:47</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Richard Buchanan</td><td>Mason Gupta</td><td>Jennifer Nguyen</td><td>On Job Training</td><td>Morning</td><td>5</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td>
+      <td>nan</td><td>d406b0c7-ce17-4654-b9de-f08d421254bd</td><td>nan</td><td>01/08/2023 12:52</td>
+      <td>01/08/2023 12:54</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Vicki Collins</td><td>Dylan Kim</td><td>Michael Lee</td><td>&gt;90</td><td>Morning</td><td>5</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>200814dd-27c7-4149-ba2b-bd3af3092880</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td>
+      <td>nan</td><td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td><td>nan</td><td>01/08/2023 20:16</td>
+      <td>01/08/2023 20:38</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Duane Norman</td><td>Jackson Park</td><td>William Kim</td><td>On Job Training</td><td>Evening</td><td>5</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td><td>Inbound</td><td>Returns</td><td>Reverse Pickup Enquiry</td>
+      <td>nan</td><td>5aed0059-55a4-4ec6-bb54-97942092020a</td><td>nan</td><td>01/08/2023 20:56</td>
+      <td>01/08/2023 21:16</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Patrick Flores</td><td>Olivia Wang</td><td>John Smith</td><td>&gt;90</td><td>Evening</td><td>5</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ba903143-1e54-406c-b969-46c52f92e5df</td><td>Inbound</td><td>Cancellation</td><td>Not Needed</td>
+      <td>nan</td><td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td><td>nan</td><td>01/08/2023 10:30</td>
+      <td>01/08/2023 10:32</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Christopher Sanchez</td><td>Austin Johnson</td><td>Michael Lee</td><td>0-30</td><td>Morning</td><td>5</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>1cfde5b9-6112-44fc-8f3b-892196137a62</td><td>Email</td><td>Returns</td><td>Fraudulent User</td>
+      <td>nan</td><td>a2938961-2833-45f1-83d6-678d9555c603</td><td>nan</td><td>01/08/2023 15:13</td>
+      <td>01/08/2023 18:39</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Desiree Newton</td><td>Emma Park</td><td>John Smith</td><td>0-30</td><td>Morning</td><td>5</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>11a3ffd8-1d6b-4806-b198-c60b5934c9bc</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td>
+      <td>nan</td><td>bfcb562b-9a2f-4cca-aa79-fd4e2952f901</td><td>nan</td><td>01/08/2023 15:31</td>
+      <td>01/08/2023 23:52</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Shannon Hicks</td><td>Aiden Patel</td><td>Olivia Tan</td><td>&gt;90</td><td>Morning</td><td>5</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>372b51a5-fa19-4a31-a4b8-a21de117d75e</td><td>Inbound</td><td>Returns</td><td>Exchange / Replacement</td>
+      <td>Very good</td><td>88537e0b-5ffa-43f9-bbe2-fe57a0f4e4ae</td><td>nan</td><td>01/08/2023 16:17</td>
+      <td>01/08/2023 16:23</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Laura Smith</td><td>Evelyn Kimura</td><td>Jennifer Nguyen</td><td>On Job Training</td><td>Evening</td><td>5</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>6e4413db-4e16-42fc-ac92-2f402e3df03c</td><td>Inbound</td><td>Returns</td><td>Missing</td>
+      <td>Shopzilla app and it's all coustomer care services is very good service provided all time</td>
+      <td>e6be9713-13c3-493c-8a91-2137cbbfa7e6</td><td>nan</td><td>01/08/2023 21:03</td>
+      <td>01/08/2023 21:07</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>David Smith</td><td>Nathan Patel</td><td>John Smith</td><td>&gt;90</td><td>Split</td><td>5</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>b0a65350-64a5-4603-8b9a-a24a4a145d08</td><td>Inbound</td><td>Shopzilla Related</td><td>General Enquiry</td>
+      <td>nan</td><td>c7caa804-2525-499e-b202-4c781cb68974</td><td>nan</td><td>01/08/2023 23:31</td>
+      <td>01/08/2023 23:36</td><td>01-Aug-23</td><td>nan</td><td>nan</td><td>nan</td><td>nan</td>
+      <td>Tabitha Ayala</td><td>Amelia Tanaka</td><td>Michael Lee</td><td>31-60</td><td>Evening</td><td>5</td>
+    </tr>
+  </tbody>
+</table>
+      <p class="small">Note: many columns contain <code>nan</code> because those fields are empty in the raw export.</p>
+
+      <!-- Missing Values -->
+      <h2>📌 Missing Values per Column</h2>
+      <table>
+        <thead>
+          <tr><th>Column Name</th><th>Missing Values</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Unique id</td><td>0</td></tr>
+          <tr><td>channel_name</td><td>0</td></tr>
+          <tr><td>category</td><td>0</td></tr>
+          <tr><td>Sub-category</td><td>0</td></tr>
+          <tr><td>Customer Remarks</td><td>57,165</td></tr>
+          <tr><td>Order_id</td><td>18,232</td></tr>
+          <tr><td>order_date_time</td><td>68,693</td></tr>
+          <tr><td>Issue_reported at</td><td>0</td></tr>
+          <tr><td>issue_responded</td><td>0</td></tr>
+          <tr><td>Survey_response_Date</td><td>0</td></tr>
+          <tr><td>Customer_City</td><td>68,828</td></tr>
+          <tr><td>Product_category</td><td>68,711</td></tr>
+          <tr><td>Item_price</td><td>68,701</td></tr>
+          <tr><td>connected_handling_time</td><td>85,665</td></tr>
+          <tr><td>Agent_name</td><td>0</td></tr>
+          <tr><td>Supervisor</td><td>0</td></tr>
+          <tr><td>Manager</td><td>0</td></tr>
+          <tr><td>Tenure Bucket</td><td>0</td></tr>
+          <tr><td>Agent Shift</td><td>0</td></tr>
+          <tr><td>CSAT Score</td><td>0</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Dataset Summary -->
+      <h2>📌 Dataset Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Total Rows</th><th>Total Columns</th><th>Duplicate Rows</th><th>Missing Cells</th><th>Numeric Columns</th><th>Categorical Columns</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>85,907</td><td>20</td><td>0</td><td>435,995</td><td>3</td><td>17</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="small">Milestone: dataset loaded and explored. Next step: data cleaning (handle missing values, convert types, deduplicate, and prepare for modeling).</p>
     </div>
-
-    <div class="section">
-      <h2>2. Install Jupyter Notebook</h2>
-      <ol class="steps">
-        <li class="step">Open your terminal or command prompt.</li>
-        <li class="step">Install Jupyter with pip:
-          <pre class="cmd">pip install notebook</pre>
-        </li>
-        <li class="step">Launch Jupyter in the folder where you will work:
-          <pre class="cmd">jupyter notebook</pre>
-          This opens a browser where you can create and run notebooks (`.ipynb`).
-        </li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>3. (Optional) Install VS Code and Extensions</h2>
-      <ol class="steps">
-        <li class="step">Download VS Code from <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>.</li>
-        <li class="step">Install these extensions from the Extensions panel in VS Code:
-          <ul>
-            <li><strong>Python</strong> (by Microsoft)</li>
-            <li><strong>Jupyter</strong> (by Microsoft)</li>
-            <li><strong>Pylance</strong> (optional — improved IntelliSense)</li>
-          </ul>
-        </li>
-        <li class="step">You can open and run `.ipynb` notebooks directly inside VS Code after selecting the proper Python kernel (top-right of the notebook view).</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>4. Install Required Python Libraries</h2>
-      <p>Install the libraries used in the Titanic example and general data work:</p>
-      <pre class="cmd">pip install pandas numpy matplotlib seaborn tabulate</pre>
-      <p class="note">If you see a <code>ModuleNotFoundError</code> when running code, install the missing library with <code>pip install &lt;library-name&gt;</code>.</p>
-    </div>
-
-    <div class="section">
-      <h2>5. Get the Titanic Dataset</h2>
-      <ol class="steps">
-        <li class="step">You can use the built-in Titanic dataset from <code>seaborn</code> or download a CSV from Kaggle:
-          <ul>
-            <li>Kaggle Titanic: <a href="https://www.kaggle.com/c/titanic/data" target="_blank">https://www.kaggle.com/c/titanic/data</a></li>
-          </ul>
-        </li>
-        <li class="step">If you download <code>titanic.csv</code>, save it to your project folder (e.g. <code>F:\semester 7\Titanic-Project\titanic.csv</code>).</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>6. Create Your Project Files</h2>
-      <ol class="steps">
-        <li class="step">Open Jupyter or VS Code and create a new notebook named <code>titanic_analysis.ipynb</code>.</li>
-        <li class="step">Add code cells to load the data, show column descriptions, preview the table, and add basic plots — run cells to verify outputs.</li>
-        <li class="step">Save your notebook in the project folder.</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>7. Run & Test</h2>
-      <ol class="steps">
-        <li class="step">Start Jupyter in the project folder:
-          <pre class="cmd">jupyter notebook</pre>
-        </li>
-        <li class="step">Open <code>titanic_analysis.ipynb</code> and run all cells. Confirm outputs (data preview, plots) show correctly.</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>8. Prepare to Upload to GitHub</h2>
-      <ol class="steps">
-        <li class="step">If you don't have a GitHub account, create one at <a href="https://github.com/" target="_blank">github.com</a>.</li>
-        <li class="step">Create a new repository on GitHub (example name: <code>Titanic-Data-Analysis</code>).</li>
-        <li class="step">Do NOT initialize with README on GitHub if you already have files locally (optional).</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>9. Upload Local Project to GitHub (Command Line)</h2>
-      <p>Open your terminal in your project folder and run:</p>
-      <pre class="cmd">git init
-git branch -M main
-git add .
-git commit -m "Initial commit: Titanic analysis"
-git remote add origin https://github.com/yourusername/Titanic-Data-Analysis.git
-git push -u origin main</pre>
-      <p class="note">If Git asks for credentials when pushing, enter your GitHub username and a <strong>Personal Access Token (PAT)</strong> as the password (GitHub no longer accepts account passwords for command-line push).</p>
-    </div>
-
-    <div class="section">
-      <h2>10. Alternative: Upload Manually via GitHub Website</h2>
-      <ol class="steps">
-        <li class="step">Go to your repository page → click <strong>Add file → Upload files</strong>.</li>
-        <li class="step">Drag & drop your notebook and small files. Commit changes.</li>
-        <li class="step">Note: GitHub web UI limits single file uploads (about 25 MB per file). For large files use Git LFS or cloud storage.</li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>11. If You Have Large Files</h2>
-      <ol class="steps">
-        <li class="step">For files over 100 MB, do not push to GitHub. Instead upload large datasets to Google Drive / Dropbox / OneDrive and include download links in your README.</li>
-        <li class="step">For files under 100 MB but large, use Git LFS: <pre class="cmd">git lfs install
-git lfs track "*.csv"
-git add .gitattributes
-git add &lt;large files&gt;
-git commit -m "Track large files with LFS"
-git push -u origin main</pre></li>
-      </ol>
-    </div>
-
-    <div class="section">
-      <h2>12. Create a README</h2>
-      <ol class="steps">
-        <li class="step">Create a file named <code>README.md</code> with a short project description, dataset links (if hosted externally), and how to run the notebook.</li>
-        <li class="step">Add, commit, and push the README to GitHub:
-          <pre class="cmd">git add README.md
-git commit -m "Add README"
-git push</pre>
-        </li>
-      </ol>
-    </div>
-
-    <footer>
-      <p>That’s it — follow these steps in order and your Titanic project will be set up locally and uploaded to GitHub. If you want, I can generate a ready-to-paste <strong>README.md</strong> or provide the notebook file text next.</p>
-    </footer>
   </div>
 </body>
 </html>
