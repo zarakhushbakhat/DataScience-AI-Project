@@ -1,424 +1,925 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Week 2 — Handling Missing Values in Titanic Dataset</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dataset Cleaning & Preprocessing Report</title>
   <style>
-    :root{
-      --bg:#f6f8fb;
+    :root {
+      --bg:#f7f9fc;
       --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#0f172a;
-      --accent-2:#0ea5a4;
-      --fill-highlight: #ffecec; /* light red for filled values */
-      --table-border:#e6e9ef;
+      --muted:#0b2a69;
+      --accent:#055f58;
       --success:#16a34a;
+      --danger:#dc2626;
+      --mono:'Courier New', monospace;
     }
-    *{box-sizing:border-box}
-    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--accent); margin:0; padding:32px}
-    .container{max-width:1100px;margin:0 auto}
-    header{display:flex;align-items:center;gap:18px;margin-bottom:22px}
-    header h1{font-size:28px;margin:0}
-    header p{margin:0;color:var(--muted)}
 
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
-    .card{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,0.04);border:1px solid rgba(15,23,42,0.04)}
+    html,body {
+      height:100%;
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background:var(--bg);
+      color:#0f172a;
+    }
 
-    .meta-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-    .meta{background:#f3f4f6;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted)}
+    .container {
+      max-width:1000px;
+      margin:36px auto;
+      padding:28px;
+    }
 
-    h2{font-size:22px;margin:0 0 12px 0}
-    p.lead{color:var(--muted);margin-top:6px}
+    header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
 
-    table{width:100%;border-collapse:collapse;border:1px solid var(--table-border);font-size:13px}
-    thead th{background:#fbfdff;padding:10px;text-align:left;border-bottom:1px solid var(--table-border);font-weight:600}
-    tbody td{padding:8px;border-bottom:1px solid var(--table-border)}
+    .brand {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
 
-    .monosmall{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:var(--muted)}
+    .logo {
+      height:56px;
+      width:56px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#67b6ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      font-family:var(--mono);
+    }
 
-    .stats{display:flex;gap:12px;flex-wrap:wrap}
-    .stat{background:linear-gradient(180deg,#fff,#fbfdff);padding:12px;border-radius:8px;min-width:120px;border:1px solid var(--table-border)}
-    .stat .num{font-size:18px;font-weight:700}
-    .stat .label{font-size:12px;color:var(--muted)}
+    h1 { font-size:22px; margin:0; }
+    p.lead { margin:6px 0 0; color:var(--muted); }
 
-    .muted-small{color:var(--muted);font-size:13px}
+    .card {
+      background:var(--card);
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 6px 18px rgba(12,20,40,0.06);
+      margin-top:18px;
+    }
 
-    .highlight-filled{background:var(--fill-highlight);padding:3px 6px;border-radius:4px}
+    h2 { font-size:18px; margin:0 0 8px; }
+    h3 { font-size:15px; margin:0 0 8px; }
+    .meta { color:var(--muted); font-size:13px; }
 
-    .note{font-size:13px;color:var(--muted);margin-top:10px}
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+      font-size:13px;
+    }
 
-    /* Rows preview area */
-    .rows-preview{max-height:420px;overflow:auto;border-radius:8px;border:1px solid var(--table-border)}
+    thead th {
+      background:#6da8af;
+      text-align:left;
+      padding:10px;
+      border-bottom:1px solid #e6eef8;
+    }
 
-    .legend{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-    .legend .box{width:14px;height:14px;border-radius:3px}
-    .legend span{font-size:13px;color:var(--muted)}
+    tbody td {
+      padding:10px;
+      border-bottom:1px solid #f1f5f9;
+    }
 
-    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--accent-2);color:white;text-decoration:none;font-weight:600}
+    .muted { color:var(--muted); }
 
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .full { grid-column:1/-1; }
+
+    .badge {
+      display:inline-block;
+      padding:6px 8px;
+      border-radius:8px;
+      font-weight:600;
+      font-size:12px;
+    }
+    .badge-accent { background:#e8f0ff; color:var(--accent); }
+    .badge-success { background:#ecfdf5; color:var(--success); }
+    .monosmall {
+      font-family:var(--mono);
+      font-size:12px;
+      background:#0f172a;
+      color:#fff;
+      padding:4px 8px;
+      border-radius:6px;
+    }
+
+    pre {
+      background:#0b1220;
+      color:#e6eef8;
+      padding:12px;
+      border-radius:8px;
+      overflow:auto;
+      font-family:var(--mono);
+      font-size:13px;
+    }
+
+    /* Scroll container for large tables */
+    .scroll-container {
+      max-height: 400px;   /* vertical scroll */
+      overflow-y: auto;
+      overflow-x: auto;    /* horizontal scroll */
+      border:1px solid #e6eef8;
+      border-radius:8px;
+      margin-top:12px;
+      padding:6px;
+    }
+
+    /* Force horizontal scroll when wide */
+    .scroll-container table {
+      min-width: 1200px;
+    }
+
+    /* Sticky header */
+    .scroll-container thead th {
+      position: sticky;
+      top: 0;
+      background: #f1f5f9;
+      z-index: 2;
+    }
+
+    .scroll-container table th,
+    .scroll-container table td {
+      white-space: nowrap;
+    }
 
     /* Responsive */
-    @media (max-width:1000px){
+    @media (max-width:820px){
       .grid{grid-template-columns:1fr}
+      .brand{flex-direction:column;align-items:flex-start}
+      .logo{height:44px;width:44px}
+    }
+
+    /* Print */
+    @media print {
+      body{background:white}
+      .container{box-shadow:none}
+      header .brand{display:none}
+      .card{box-shadow:none}
+      .scroll-container{max-height:none;overflow:visible;border:none;padding:0}
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <div>
-        <h1>Week 2 Assignment — Handling Missing Values (Titanic)</h1>
-        <p class="lead">Detecting, analyzing, and handling missing values — filled using median/mode — and preparing the cleaned dataset for Week 3 (EDA).</p>
+      <div class="brand">
+        <div class="logo">DC</div>
+        <div>
+          <h1>Week 2: Data Collection & Cleaning</h1>
+          <p class="lead">Transforming Raw Data into Reliable Insights"</p>
+        </div>
       </div>
+      <div class="meta">Data Source <strong>Kaggel.com </strong></div>
     </header>
 
-    <div class="grid">
-<main class="card">
-<h2>Introduction / Purpose</h2>
-<p>The purpose of this assignment is to detect, analyze, and handle missing values in the Titanic dataset. We explore dataset details, identify missing values, apply statistical methods (mean, median, mode) to handle missing data, and justify imputation or dropping of columns. Finally, we display the cleaned dataset with highlighted replacements and summarize the results for use in Exploratory Data Analysis (Week 3).</p>
-    <div class="grid">
-      <main class="card">
-        <h2>1. Dataset Information</h2>
-        <div class="meta-list">
-          <div class="meta">Rows: <strong>891</strong></div>
-          <div class="meta">Columns: <strong>15 (original)</strong></div>
-          <div class="meta">Source: <strong>Seaborn Titanic Dataset</strong></div>
-        </div>
+    <!-- Section 1 -->
+    <section class="card">
+  <h2>1. Data Cleaning Process </h2>
+  <p class="muted">
+    In this assignment, we were required to remove duplicate records, handle missing values, and treat outliers in the dataset. 
+    These steps ensure that the data is accurate, consistent, and reliable for further analysis. After applying the cleaning 
+    techniques to our project dataset, we generated a “Before vs After Cleaning Report” which highlights the differences in 
+    data quality by showing the dataset’s shape, missing values, and sample rows before cleaning compared to the cleaned dataset.
+  </p>
 
-        <section style="margin-top:14px">
-          <h3 style="margin:8px 0 10px 0">Column Names</h3>
-          <p class="monosmall">survived, pclass, sex, age, sibsp, parch, fare, embarked, class, who, adult_male, deck, embark_town, alive, alone</p>
-        </section>
+  <p class="muted">
+    <strong>Dataset Overview</strong> <br> <br> The dataset has been successfully loaded for analysis. 
+    It contains <strong>85,907 rows</strong> and <strong>20 columns</strong>. 
+    The dataset comprises customer service interactions, including details about the agent, customer remarks, 
+    issue reported, response time, CSAT score, and other transactional information.
+  </p>
+</section>
 
-        <section style="margin-top:14px">
-          <h3>First 5 Rows (sample)</h3>
-          <div class="rows-preview" style="margin-top:8px;padding:12px">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>pclass</th>
-                  <th>sex</th>
-                  <th>age</th>
-                  <th>sibsp</th>
-                  <th>parch</th>
-                  <th>fare</th>
-                  <th>embarked</th>
-                  <th>deck</th>
-                  <th>embark_town</th>
-                  <th>alive</th>
-                  <th>alone</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>0</td>
-                  <td>3</td>
-                  <td>male</td>
-                  <td>22.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>7.2500</td>
-                  <td>S</td>
-                  <td>—</td>
-                  <td>Southampton</td>
-                  <td>no</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>1</td>
-                  <td>female</td>
-                  <td>38.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>71.2833</td>
-                  <td>C</td>
-                  <td class="monosmall">C</td>
-                  <td>Cherbourg</td>
-                  <td>yes</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>3</td>
-                  <td>female</td>
-                  <td>26.0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>7.9250</td>
-                  <td>S</td>
-                  <td>—</td>
-                  <td>Southampton</td>
-                  <td>yes</td>
-                  <td>True</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>1</td>
-                  <td>female</td>
-                  <td>35.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>53.1000</td>
-                  <td>S</td>
-                  <td class="monosmall">C</td>
-                  <td>Southampton</td>
-                  <td>yes</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>3</td>
-                  <td>male</td>
-                  <td>35.0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>8.0500</td>
-                  <td>S</td>
-                  <td>—</td>
-                  <td>Southampton</td>
-                  <td>no</td>
-                  <td>True</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <!-- Section 2 -->
+    <section class="card">
+      <h2>2. Initial Dataset Inspection</h2>
+      <h3>Shape Before Cleaning</h3>
+      <ul class="muted">
+        <li>Rows: <strong>85,907</strong></li>
+        <li>Columns: <strong>20</strong></li>
+      </ul>
+</section>
 
-          <p class="note">Note: The original dataset contains 891 rows. The preview above shows the provided first 5 rows. The full rows 0–100 preview is available below in the "Cleaned Rows (0–100)" table — the table highlights replaced values in light red.</p>
-        </section>
+<section class="card">
+      <h2>3. Missing Values Before Cleaning</h2>
+      <table>
+        <thead>
+          <tr><th>Column</th><th>Missing Values</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Unique id</td><td>0</td></tr>
+          <tr><td>channel_name</td><td>0</td></tr>
+          <tr><td>category</td><td>0</td></tr>
+          <tr><td>Sub-category</td><td>0</td></tr>
+          <tr><td>Customer Remarks</td><td>57,165</td></tr>
+          <tr><td>Order_id</td><td>18,232</td></tr>
+          <tr><td>order_date_time</td><td>68,693</td></tr>
+          <tr><td>Issue_reported at</td><td>0</td></tr>
+          <tr><td>issue_responded</td><td>0</td></tr>
+          <tr><td>Survey_response_Date</td><td>0</td></tr>
+          <tr><td>Customer_City</td><td>68,828</td></tr>
+          <tr><td>Product_category</td><td>68,711</td></tr>
+          <tr><td>Item_price</td><td>68,701</td></tr>
+          <tr><td>connected_handling_time</td><td>85,665</td></tr>
+          <tr><td>Agent_name</td><td>0</td></tr>
+          <tr><td>Supervisor</td><td>0</td></tr>
+          <tr><td>Manager</td><td>0</td></tr>
+          <tr><td>Tenure Bucket</td><td>0</td></tr>
+          <tr><td>Agent Shift</td><td>0</td></tr>
+          <tr><td>CSAT Score</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <p class="muted"><strong>Observation:</strong> Several columns contain significant missing values, especially <em>Customer Remarks</em>, <em>order_date_time</em>, <em>Customer_City</em>, and <em>connected_handling_time</em>.</p>
+    </section>
 
-        <section style="margin-top:16px">
-          <h2>2. Missing Values — Detection</h2>
-          <table style="margin-top:8px">
-            <thead>
-              <tr><th>Column</th><th>Missing Count</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>age</td><td>177</td></tr>
-              <tr><td>embarked</td><td>2</td></tr>
-              <tr><td>embark_town</td><td>2</td></tr>
-              <tr><td>deck</td><td>688</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section style="margin-top:16px">
-          <h2>3. Statistical Handling of Missing Values</h2>
-
-          <h3 style="margin-top:10px">(A) Age — Numerical</h3>
-          <p class="muted-small">Missing: <strong>177</strong></p>
-          <div class="stats" style="margin-top:8px">
-            <div class="stat"><div class="num">Mean</div><div class="label">29.7</div></div>
-            <div class="stat"><div class="num">Median</div><div class="label">28.0</div></div>
-          </div>
-          <p class="note">Decision: <strong>Fill missing Age values with Median = 28</strong>. Rationale: median is robust to outliers and better represents the central tendency for skewed age distribution.</p>
-
-          <h3 style="margin-top:10px">(B) Embarked — Categorical</h3>
-          <p class="muted-small">Missing: <strong>2</strong></p>
-          <table style="margin-top:8px">
-            <thead><tr><th>Embarked</th><th>Count</th></tr></thead>
-            <tbody>
-              <tr><td>S</td><td>644</td></tr>
-              <tr><td>C</td><td>168</td></tr>
-              <tr><td>Q</td><td>77</td></tr>
-            </tbody>
-          </table>
-          <p class="note">Decision: Fill missing <strong>embarked</strong> with mode = <strong>S</strong>.</p>
-
-          <h3 style="margin-top:10px">(C) Embark Town — Categorical</h3>
-          <p class="muted-small">Missing: <strong>2</strong></p>
-          <table style="margin-top:8px">
-            <thead><tr><th>Town</th><th>Count</th></tr></thead>
-            <tbody>
-              <tr><td>Southampton</td><td>644</td></tr>
-              <tr><td>Cherbourg</td><td>168</td></tr>
-              <tr><td>Queenstown</td><td>77</td></tr>
-            </tbody>
-          </table>
-          <p class="note">Decision: Fill missing <strong>embark_town</strong> with mode = <strong>Southampton</strong>.</p>
-
-          <h3 style="margin-top:10px">(D) Deck</h3>
-          <p class="muted-small">Missing: <strong>688</strong> (≈ 77%)</p>
-          <p class="note">Decision: <strong>Drop column</strong> because the missing percentage is too large to impute reliably.</p>
-        </section>
-
-        <section style="margin-top:16px">
-          <h2>4. After Filling Missing Values</h2>
-          <table style="margin-top:8px">
-            <thead><tr><th>Column</th><th>Missing Before</th><th>Missing After</th></tr></thead>
-            <tbody>
-              <tr><td>age</td><td>177</td><td>0</td></tr>
-              <tr><td>embarked</td><td>2</td><td>0</td></tr>
-              <tr><td>embark_town</td><td>2</td><td>0</td></tr>
-              <tr><td>deck</td><td>688</td><td>dropped</td></tr>
-            </tbody>
-          </table>
-          <p class="note">Resulting cleaned dataset: <strong>891 rows × 14 columns</strong> (deck column removed).</p>
-        </section>
-
-        <section style="margin-top:16px">
-          <h2>5. Cleaned Dataset — Rows 0–100 (preview)</h2>
-          <div class="legend" style="margin-bottom:8px">
-            <div class="box" style="background:var(--fill-highlight);border:1px solid #f5c6c6"></div>
-            <span>Cells highlighted show values that were filled (median/mode).</span>
-          </div>
-
-          <div class="rows-preview" style="padding:12px">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>pclass</th>
-                  <th>sex</th>
-                  <th>age</th>
-                  <th>sibsp</th>
-                  <th>parch</th>
-                  <th>fare</th>
-                  <th>embarked</th>
-                  <th>embark_town</th>
-                  <th>alive</th>
-                  <th>alone</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Provided rows 0-4 (unchanged except for deck removal) -->
-                <tr>
-                  <td>0</td>
-                  <td>3</td>
-                  <td>male</td>
-                  <td>22.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>7.2500</td>
-                  <td>S</td>
-                  <td>Southampton</td>
-                  <td>no</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>1</td>
-                  <td>female</td>
-                  <td>38.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>71.2833</td>
-                  <td>C</td>
-                  <td>Cherbourg</td>
-                  <td>yes</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>3</td>
-                  <td>female</td>
-                  <td>26.0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>7.9250</td>
-                  <td>S</td>
-                  <td>Southampton</td>
-                  <td>yes</td>
-                  <td>True</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>1</td>
-                  <td>female</td>
-                  <td>35.0</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>53.1000</td>
-                  <td>S</td>
-                  <td>Southampton</td>
-                  <td>yes</td>
-                  <td>False</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>3</td>
-                  <td>male</td>
-                  <td>35.0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>8.0500</td>
-                  <td>S</td>
-                  <td>Southampton</td>
-                  <td>no</td>
-                  <td>True</td>
-                </tr>
-
-                <!-- Example rows where imputation happened. These are illustrative rows showing filled values. -->
-                <tr>
-                  <td>10</td>
-                  <td>3</td>
-                  <td>male</td>
-                  <td class="highlight-filled">28.0<span style="font-size:11px;color:var(--muted);margin-left:6px"> (filled: median)</span></td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>7.9250</td>
-                  <td class="highlight-filled">S<span style="font-size:11px;color:var(--muted);margin-left:6px">(filled: mode)</span></td>
-                  <td class="highlight-filled">Southampton<span style="font-size:11px;color:var(--muted);margin-left:6px">(filled: mode)</span></td>
-                  <td>no</td>
-                  <td>True</td>
-                </tr>
-
-                <tr>
-                  <td>34</td>
-                  <td>2</td>
-                  <td>female</td>
-                  <td class="highlight-filled">28.0<span style="font-size:11px;color:var(--muted);margin-left:6px"> (filled: median)</span></td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>13.0</td>
-                  <td>Q</td>
-                  <td>Queenstown</td>
-                  <td>yes</td>
-                  <td>True</td>
-                </tr>
-
-                <!-- In actual cleaned file there are rows 0..100; this preview shows a few rows and examples of filled cells. -->
-              </tbody>
-            </table>
-            <p class="note" style="margin-top:10px">Tip: Filled cells show <span style="background:var(--fill-highlight);padding:2px 6px;border-radius:4px">light red</span> background. In your project deliverable you can export these rows (0–100) to CSV or HTML for submission.</p>
-          </div>
-        </section>
-
-        <section style="margin-top:16px">
-          <h2>6. Summary & Next Steps</h2>
-          <ul style="margin-top:8px;color:var(--muted)">
-            <li>Missing values were detected in <strong>age</strong>, <strong>embarked</strong>, <strong>embark_town</strong>, and <strong>deck</strong>.</li>
-            <li><strong>Age</strong> (177 missing) — imputed using <strong>median = 28</strong>.</li>
-            <li><strong>Embarked</strong> and <strong>embark_town</strong> (2 missing each) — imputed using <strong>mode</strong> (S / Southampton).</li>
-            <li><strong>Deck</strong> (688 missing) — dropped due to high missing proportion.</li>
-            <li>Cleaned dataset ready: <strong>891 × 14</strong>. Recommendation: proceed to Week 3 — Exploratory Data Analysis (EDA) and visualizations.</li>
-          </ul>
-
-          
-        </section>
-
-        <footer>
-          <p> Week 2 — Handling Missing Values. Methodology: mean/median/mode applied where appropriate; column dropped when imputation would be unreliable.</p>
-        </footer>
-      </main>
-
-      <aside class="card">
-        <h2>Quick Reference</h2>
-        <div style="margin-top:10px">
-          <div class="stat" style="display:block;margin-bottom:8px"><div class="num">Mean Age</div><div class="label">29.7</div></div>
-          <div class="stat" style="display:block;margin-bottom:8px"><div class="num">Median Age</div><div class="label">28.0 (used for imputation)</div></div>
-          <div class="stat" style="display:block;margin-bottom:8px"><div class="num">Embarked Mode</div><div class="label">S</div></div>
-          <div class="stat" style="display:block;margin-bottom:8px"><div class="num">Embark Town Mode</div><div class="label">Southampton</div></div>
-          <div class="stat" style="display:block;margin-bottom:8px"><div class="num">Dropped Column</div><div class="label">deck (688 missing)</div></div>
-        </div>
-
-        
-        
-      </aside>
+<!-- Section 3: Missing Value Handling Strategy -->
+    <div class="card">
+      <h2>4. Missing Value Handling Strategy</h2>
+      <p class="muted">
+        The missing values were handled using <strong>Mean / Median / Mode</strong> imputation
+        based on the data type and distribution.
+      </p>
+      <div class="scroll-container">
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Mean</th><th>Median</th><th>Mode</th><th>Used Strategy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Unique id</td><td>nan</td><td>nan</td><td>0000978d-8599-4e17-8cf6-28e9faeba4c9</td><td>Mode</td></tr>
+            <tr><td>channel_name</td><td>nan</td><td>nan</td><td>Inbound</td><td>Mode</td></tr>
+            <tr><td>category</td><td>nan</td><td>nan</td><td>Returns</td><td>Mode</td></tr>
+            <tr><td>Sub-category</td><td>nan</td><td>nan</td><td>Reverse Pickup Enquiry</td><td>Mode</td></tr>
+            <tr><td>Customer Remarks</td><td>nan</td><td>nan</td><td>Good</td><td>Mode</td></tr>
+            <tr><td>Order_id</td><td>nan</td><td>nan</td><td>0000a850-ca65-4eb1-ace1-9e34d5d1637a</td><td>Mode</td></tr>
+            <tr><td>order_date_time</td><td>nan</td><td>nan</td><td>09/08/2023 11:55</td><td>Mode</td></tr>
+            <tr><td>Issue_reported at</td><td>nan</td><td>nan</td><td>13/08/2023 10:40</td><td>Mode</td></tr>
+            <tr><td>issue_responded</td><td>nan</td><td>nan</td><td>28/08/2023 00:00</td><td>Mode</td></tr>
+            <tr><td>Survey_response_Date</td><td>nan</td><td>nan</td><td>28-Aug-23</td><td>Mode</td></tr>
+            <tr><td>Customer_City</td><td>nan</td><td>nan</td><td>HYDERABAD</td><td>Mode</td></tr>
+            <tr><td>Product_category</td><td>nan</td><td>nan</td><td>Electronics</td><td>Mode</td></tr>
+            <tr><td>Item_price</td><td>5660.77</td><td>979</td><td>999.0</td><td>Median</td></tr>
+            <tr><td>connected_handling_time</td><td>462.4</td><td>427</td><td>282.0</td><td>Median</td></tr>
+            <tr><td>Agent_name</td><td>nan</td><td>nan</td><td>Wendy Taylor</td><td>Mode</td></tr>
+            <tr><td>Supervisor</td><td>nan</td><td>nan</td><td>Carter Park</td><td>Mode</td></tr>
+            <tr><td>Manager</td><td>nan</td><td>nan</td><td>John Smith</td><td>Mode</td></tr>
+            <tr><td>Tenure Bucket</td><td>nan</td><td>nan</td><td>&gt;90</td><td>Mode</td></tr>
+            <tr><td>Agent Shift</td><td>nan</td><td>nan</td><td>Morning</td><td>Mode</td></tr>
+            <tr><td>CSAT Score</td><td>4.24</td><td>5</td><td>5</td><td>Median</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted"><strong>Explanation:</strong></p>
+      <ul class="muted">
+        <li><strong>Mode</strong> imputation was applied to categorical variables.</li>
+        <li><strong>Median</strong> was used for skewed numeric variables like <em>Item_price</em>, <em>connected_handling_time</em>, and <em>CSAT Score</em> to avoid distortion from outliers.</li>
+      </ul>
     </div>
+
+    <div class="full card">
+        <h2>5. Duplicate Rows Check</h2>
+        <p class="muted"><strong>Duplicate Rows Removed:</strong> 0</p>
+        <p class="muted">The dataset contained no duplicate entries.</p>
+      </div>
+
+      <!-- Quartile & Outlier Explanation Section -->
+<section class="card">
+  <h2>6. Quartile & Outlier Explanation (Numeric Columns)</h2>
+
+  <div class="muted">
+    <h3>📊 Column: Item_price</h3>
+    <p>
+      Q1 (middle of lower half) = <strong>979.00</strong><br>
+      Q2 (median / middle of dataset) = <strong>979.00</strong><br>
+      Q3 (middle of upper half) = <strong>979.00</strong><br>
+      IQR (Q3 - Q1) = <strong>0.00</strong><br>
+      Lower Bound = <strong>979.00</strong><br>
+      Upper Bound = <strong>979.00</strong><br>
+      <em>Note:</em> Values between <strong>979.00</strong> and <strong>979.00</strong> are considered normal; 
+      only values <strong>&lt; 979.00</strong> or <strong>&gt; 979.00</strong> are outliers.<br>
+      ➝ <strong>Outliers Found:</strong> 8600 below, 8599 above
+    </p>
   </div>
+
+  <div class="muted">
+    <h3>📊 Column: connected_handling_time</h3>
+    <p>
+      Q1 (middle of lower half) = <strong>427.00</strong><br>
+      Q2 (median / middle of dataset) = <strong>427.00</strong><br>
+      Q3 (middle of upper half) = <strong>427.00</strong><br>
+      IQR (Q3 - Q1) = <strong>0.00</strong><br>
+      Lower Bound = <strong>427.00</strong><br>
+      Upper Bound = <strong>427.00</strong><br>
+      <em>Note:</em> Values between <strong>427.00</strong> and <strong>427.00</strong> are considered normal; 
+      only values <strong>&lt; 427.00</strong> or <strong>&gt; 427.00</strong> are outliers.<br>
+      ➝ <strong>Outliers Found:</strong> 120 below, 120 above
+    </p>
+  </div>
+
+  <div class="muted">
+    <h3>📊 Column: CSAT Score</h3>
+    <p>
+      Q1 (middle of lower half) = <strong>4.00</strong><br>
+      Q2 (median / middle of dataset) = <strong>5.00</strong><br>
+      Q3 (middle of upper half) = <strong>5.00</strong><br>
+      IQR (Q3 - Q1) = <strong>1.00</strong><br>
+      Lower Bound = <strong>2.50</strong><br>
+      Upper Bound = <strong>6.50</strong><br>
+      <em>Note:</em> Values between <strong>2.50</strong> and <strong>6.50</strong> are considered normal; 
+      only values <strong>&lt; 2.50</strong> or <strong>&gt; 6.50</strong> are outliers.<br>
+      ➝ <strong>Outliers Found:</strong> 12513 below, 0 above
+    </p>
+  </div>
+</section>
+      <div class="full card">
+        <h2>7. Outlier Detection & Quartile Analysis</h2>
+        
+        <p class="muted">Numeric Columns Analyzed: <strong>Item_price, connected_handling_time, CSAT Score</strong></p>
+
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Q1</th><th>Median</th><th>Q3</th><th>IQR</th><th>Lower Bound</th><th>Upper Bound</th><th>Outliers Below</th><th>Outliers Above</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Item_price</td><td>979</td><td>979</td><td>979</td><td>0</td><td>979</td><td>979</td><td>8,600</td><td>8,599</td></tr>
+            <tr><td>connected_handling_time</td><td>427</td><td>427</td><td>427</td><td>0</td><td>427</td><td>427</td><td>120</td><td>120</td></tr>
+            <tr><td>CSAT Score</td><td>4</td><td>5</td><td>5</td><td>1</td><td>2.5</td><td>6.5</td><td>12,513</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <p class="muted"><strong>Observation:</strong></p>
+        <ul class="muted">
+          <li><em>Item_price</em> and <em>connected_handling_time</em> have extreme outliers due to identical Q1, Q2, Q3 values (IQR = 0).</li>
+          <li><em>CSAT Score</em> shows 12,513 low outliers (scores below 2.5).</li>
+        </ul>
+      </div>
+
+
+
+    <!-- Section 3 -->
+    <section class="card">
+      <h2>8. Before Cleaning (First 20 Rows)</h2>
+      <div class="scroll-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Call Type</th>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Remarks</th>
+              <th>Case ID</th>
+              <th>Timestamp</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Date</th>
+              <th>City</th>
+              <th>Department</th>
+              <th>Amount</th>
+              <th>Balance</th>
+              <th>Agent 1</th>
+              <th>Agent 2</th>
+              <th>Agent 3</th>
+              <th>Training</th>
+              <th>Shift</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td><td>Outcall</td><td>Product Queries</td><td>Life Insurance</td><td>NaN</td><td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td><td>NaN</td><td>01/08/2023 11:13</td><td>01/08/2023 11:47</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Richard Buchanan</td><td>Mason Gupta</td><td>Jennifer Nguyen</td><td>On Job Training</td><td>Morning</td><td>5</td></tr>
+        <tr><td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td><td>NaN</td><td>d406b0c7-ce17-4654-b9de-f08d421254bd</td><td>NaN</td><td>01/08/2023 12:52</td><td>01/08/2023 12:54</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Vicki Collins</td><td>Dylan Kim</td><td>Michael Lee</td><td>&gt;90</td><td>Morning</td><td>5</td></tr>
+        <tr><td>200814dd-27c7-4149-ba2b-bd3af3092880</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td><td>NaN</td><td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td><td>NaN</td><td>01/08/2023 20:16</td><td>01/08/2023 20:38</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Duane Norman</td><td>Jackson Park</td><td>William Kim</td><td>On Job Training</td><td>Evening</td><td>5</td></tr>
+        <tr><td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td><td>Inbound</td><td>Returns</td><td>Reverse Pickup Enquiry</td><td>NaN</td><td>5aed0059-55a4-4ec6-bb54-97942092020a</td><td>NaN</td><td>01/08/2023 20:56</td><td>01/08/2023 21:16</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Patrick Flores</td><td>Olivia Wang</td><td>John Smith</td><td>&gt;90</td><td>Evening</td><td>5</td></tr>
+        <tr><td>ba903143-1e54-406c-b969-46c52f92e5df</td><td>Inbound</td><td>Cancellation</td><td>Not Needed</td><td>NaN</td><td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td><td>NaN</td><td>01/08/2023 10:30</td><td>01/08/2023 10:32</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Christopher Sanchez</td><td>Austin Johnson</td><td>Michael Lee</td><td>0-30</td><td>Morning</td><td>5</td></tr>
+        <tr><td>1cfde5b9-6112-44fc-8f3b-892196137a62</td><td>Email</td><td>Returns</td><td>Fraudulent User</td><td>NaN</td><td>a2938961-2833-45f1-83d6-678d9555c603</td><td>NaN</td><td>01/08/2023 15:13</td><td>01/08/2023 18:39</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Desiree Newton</td><td>Emma Park</td><td>John Smith</td><td>0-30</td><td>Morning</td><td>5</td></tr>
+        <tr><td>11a3ffd8-1d6b-4806-b198-c60b5934c9bc</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td><td>NaN</td><td>bfcb562b-9a2f-4cca-aa79-fd4e2952f901</td><td>NaN</td><td>01/08/2023 15:31</td><td>01/08/2023 23:52</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Shannon Hicks</td><td>Aiden Patel</td><td>Olivia Tan</td><td>&gt;90</td><td>Morning</td><td>5</td></tr>
+        <tr><td>372b51a5-fa19-4a31-a4b8-a21de117d75e</td><td>Inbound</td><td>Returns</td><td>Exchange / Replacement</td><td>Very good</td><td>88537e0b-5ffa-43f9-bbe2-fe57a0f4e4ae</td><td>NaN</td><td>01/08/2023 16:17</td><td>01/08/2023 16:23</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Laura Smith</td><td>Evelyn Kimura</td><td>Jennifer Nguyen</td><td>On Job Training</td><td>Evening</td><td>5</td></tr>
+        <tr><td>6e4413db-4e16-42fc-ac92-2f402e3df03c</td><td>Inbound</td><td>Returns</td><td>Missing</td><td>Shopzilla app and it's all coustomer care serv...</td><td>e6be9713-13c3-493c-8a91-2137cbbfa7e6</td><td>NaN</td><td>01/08/2023 21:03</td><td>01/08/2023 21:07</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>David Smith</td><td>Nathan Patel</td><td>John Smith</td><td>&gt;90</td><td>Split</td><td>5</td></tr>
+        <tr><td>b0a65350-64a5-4603-8b9a-a24a4a145d08</td><td>Inbound</td><td>Shopzilla Related</td><td>General Enquiry</td><td>NaN</td><td>c7caa804-2525-499e-b202-4c781cb68974</td><td>NaN</td><td>01/08/2023 23:31</td><td>01/08/2023 23:36</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Tabitha Ayala</td><td>Amelia Tanaka</td><td>Michael Lee</td><td>31-60</td><td>Evening</td><td>5</td></tr>
+        <tr><td>74a2cbbf-497e-4177-b30b-483f99effb13</td><td>Outcall</td><td>Returns</td><td>Return request</td><td>NaN</td><td>5862d1a1-2081-4e28-ad0a-cec43380ac7d</td><td>NaN</td><td>02/08/2023 18:14</td><td>02/08/2023 18:16</td><td>02-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Carla Morgan</td><td>Nathan Patel</td><td>Emily Chen</td><td>0-30</td><td>Evening</td><td>4</td></tr>
+        <tr><td>4c28acf4-2ea4-4be8-b8f1-113e676fc8b7</td><td>Inbound</td><td>Order Related</td><td>Delayed</td><td>Very bad</td><td>55bbace3-eb2e-4f67-aacb-4f8ee8512f75</td><td>19/07/2023 23:50</td><td>02/08/2023 10:44</td><td>02/08/2023 11:14</td><td>02-Aug-23</td><td>NAGPUR</td><td>LifeStyle</td><td>434.0</td><td>NaN</td><td>Stanley Hogan</td><td>Harper Wong</td><td>Emily Chen</td><td>&gt;90</td><td>Split</td><td>1</td></tr>
+        <tr><td>e7ec72bb-65e9-4464-9c2b-8ce6b0e82a28</td><td>Inbound</td><td>Shopzilla Related</td><td>General Enquiry</td><td>NaN</td><td>c7d5eef8-d239-474c-8d24-542db2923b3c</td><td>NaN</td><td>01/08/2023 10:09</td><td>01/08/2023 10:12</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Timothy Scott</td><td>Zoe Yamamoto</td><td>William Kim</td><td>On Job Training</td><td>Morning</td><td>4</td></tr>
+        <tr><td>68c596f2-4130-42f9-a140-b336261b1629</td><td>Inbound</td><td>Shopzilla Related</td><td>General Enquiry</td><td>NaN</td><td>c1e10375-7426-4b2a-aca6-17dc6bc9c7a3</td><td>NaN</td><td>01/08/2023 10:15</td><td>01/08/2023 11:21</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Shannon Hicks</td><td>Aiden Patel</td><td>Olivia Tan</td><td>&gt;90</td><td>Morning</td><td>4</td></tr>
+        <tr><td>6b966653-0900-4d58-8b38-c17cfbdaf000</td><td>Inbound</td><td>Returns</td><td>Reverse Pickup Enquiry</td><td>NaN</td><td>9e0d7d55-d012-42f7-8e21-634942419386</td><td>NaN</td><td>02/08/2023 11:26</td><td>02/08/2023 11:44</td><td>02-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Mark Wilson</td><td>Scarlett Chen</td><td>John Smith</td><td>0-30</td><td>Morning</td><td>5</td></tr>
+        <tr><td>130dfefe-1d77-47f9-b759-546f24b6b909</td><td>Inbound</td><td>Returns</td><td>Missing</td><td>NaN</td><td>8153c646-4940-406f-992c-952ed08e9af8</td><td>NaN</td><td>02/08/2023 19:56</td><td>02/08/2023 20:06</td><td>02-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Mark Black</td><td>Sophia Sato</td><td>John Smith</td><td>&gt;90</td><td>Afternoon</td><td>5</td></tr>
+        <tr><td>4cc4df74-fcd3-413a-920d-ca3ad2dd0904</td><td>Inbound</td><td>Returns</td><td>Service Centres Related</td><td>NaN</td><td>4245d6df-49c6-491a-8724-125c4df82e75</td><td>06/05/2023 21:41</td><td>01/08/2023 09:01</td><td>01/08/2023 09:03</td><td>01-Aug-23</td><td>RANCHI</td><td>Electronics</td><td>1299.0</td><td>NaN</td><td>Amy Mendez</td><td>Sophia Sato</td><td>John Smith</td><td>0-30</td><td>Morning</td><td>5</td></tr>
+        <tr><td>c54459b3-ffb3-4ffa-a338-6fd179beb6b1</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td><td>Something</td><td>0cdaa1f1-02f2-40ec-9134-7cd0f92a6b3e</td><td>NaN</td><td>01/08/2023 10:00</td><td>01/08/2023 10:04</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Jennifer May</td><td>Zoe Yamamoto</td><td>William Kim</td><td>On Job Training</td><td>Morning</td><td>3</td></tr>
+        <tr><td>deccfb1d-05d4-40b8-8371-15282c91bacb</td><td>Inbound</td><td>Cancellation</td><td>Not Needed</td><td>NaN</td><td>3f16b782-27cf-4831-b542-cd8bd60c0385</td><td>NaN</td><td>01/08/2023 21:05</td><td>01/08/2023 21:07</td><td>01-Aug-23</td><td>NaN</td><td>NaN</td><td>NaN</td><td>NaN</td><td>Ryan Thompson</td><td>Olivia Wang</td><td>Emily Chen</td><td>31-60</td><td>Evening</td><td>5</td></tr>
+        <tr><td>6e51734e-9627-4a12-8062-877c3638627d</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td><td>All good</td><td>8a1ae638-4d8c-4a5e-bf1b-eb74f881fc3d</td><td>18/07/2023 12:20</td><td>02/08/2023 20:03</td><td>02/08/2023 20:05</td><td>02-Aug-23</td><td>NAGPUR</td><td>Electronics</td><td>15990.0</td><td>NaN</td><td>David Butler</td><td>Olivia Wang</td><td>Emily Chen</td><td>31-60</td><td>Evening</td><td>5</td></tr>
+      </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <div class="full card">
+        <h2>9. Dataset After Cleaning</h2>
+        <h3>Shape After Cleaning</h3>
+        <ul class="muted">
+          <li>Rows: <strong>85,907</strong></li>
+          <li>Columns: <strong>20</strong></li>
+        </ul>
+         <h3>Missing Values Before Cleaning</h3>
+        <table>
+          <thead><tr><th>Column</th><th>Missing Values</th></tr></thead>
+          <tbody>
+            <tr><td>All Columns</td><td>0</td></tr>
+          </tbody>
+        </table>
+</div>
+        <!-- Section 3 -->
+    <section class="card">
+      <h2>10. After Cleaning (First 20 Rows)</h2>
+      <div class="scroll-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Call Type</th>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Remarks</th>
+              <th>Case ID</th>
+              <th>Timestamp</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Date</th>
+              <th>City</th>
+              <th>Department</th>
+              <th>Amount</th>
+              <th>Balance</th>
+              <th>Agent 1</th>
+              <th>Agent 2</th>
+              <th>Agent 3</th>
+              <th>Training</th>
+              <th>Shift</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td>
+            <td>Outcall</td>
+            <td>Product Queries</td>
+            <td>Life Insurance</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 11:13</td>
+            <td>01/08/2023 11:47</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Richard Buchanan</td>
+            <td>Mason Gupta</td>
+            <td>Jennifer Nguyen</td>
+            <td>On Job Training</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td>
+            <td>Outcall</td>
+            <td>Product Queries</td>
+            <td>Product Specific Information</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 12:52</td>
+            <td>01/08/2023 12:54</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Vicki Collins</td>
+            <td>Dylan Kim</td>
+            <td>Michael Lee</td>
+            <td>&gt;90</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>200814dd-27c7-4149-ba2b-bd3af3092880</td>
+            <td>Inbound</td>
+            <td>Order Related</td>
+            <td>Installation/demo</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 20:16</td>
+            <td>01/08/2023 20:38</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Duane Norman</td>
+            <td>Jackson Park</td>
+            <td>William Kim</td>
+            <td>On Job Training</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Reverse Pickup Enquiry</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>5aed0059-55a4-4ec6-bb54-97942092020a</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 20:56</td>
+            <td>01/08/2023 21:16</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Patrick Flores</td>
+            <td>Olivia Wang</td>
+            <td>John Smith</td>
+            <td>&gt;90</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>ba903143-1e54-406c-b969-46c52f92e5df</td>
+            <td>Inbound</td>
+            <td>Cancellation</td>
+            <td>Not Needed</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 10:30</td>
+            <td>01/08/2023 10:32</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Christopher Sanchez</td>
+            <td>Austin Johnson</td>
+            <td>Michael Lee</td>
+            <td>0-30</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>1cfde5b9-6112-44fc-8f3b-892196137a62</td>
+            <td>Email</td>
+            <td>Returns</td>
+            <td>Fraudulent User</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>a2938961-2833-45f1-83d6-678d9555c603</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 15:13</td>
+            <td>01/08/2023 18:39</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Desiree Newton</td>
+            <td>Emma Park</td>
+            <td>John Smith</td>
+            <td>0-30</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>11a3ffd8-1d6b-4806-b198-c60b5934c9bc</td>
+            <td>Outcall</td>
+            <td>Product Queries</td>
+            <td>Product Specific Information</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>bfcb562b-9a2f-4cca-aa79-fd4e2952f901</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 15:31</td>
+            <td>01/08/2023 23:52</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Shannon Hicks</td>
+            <td>Aiden Patel</td>
+            <td>Olivia Tan</td>
+            <td>&gt;90</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>372b51a5-fa19-4a31-a4b8-a21de117d75e</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Exchange / Replacement</td>
+            <td>Very good</td>
+            <td>88537e0b-5ffa-43f9-bbe2-fe57a0f4e4ae</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 16:17</td>
+            <td>01/08/2023 16:23</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Laura Smith</td>
+            <td>Evelyn Kimura</td>
+            <td>Jennifer Nguyen</td>
+            <td>On Job Training</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>6e4413db-4e16-42fc-ac92-2f402e3df03c</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Missing</td>
+            <td>Shopzilla app and it's all coustomer care services is very good service provided all time</td>
+            <td>e6be9713-13c3-493c-8a91-2137cbbfa7e6</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 21:03</td>
+            <td>01/08/2023 21:07</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>David Smith</td>
+            <td>Nathan Patel</td>
+            <td>John Smith</td>
+            <td>&gt;90</td>
+            <td>Split</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>b0a65350-64a5-4603-8b9a-a24a4a145d08</td>
+            <td>Inbound</td>
+            <td>Shopzilla Related</td>
+            <td>General Enquiry</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>c7caa804-2525-499e-b202-4c781cb68974</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 23:31</td>
+            <td>01/08/2023 23:36</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Tabitha Ayala</td>
+            <td>Amelia Tanaka</td>
+            <td>Michael Lee</td>
+            <td>31-60</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>74a2cbbf-497e-4177-b30b-483f99effb13</td>
+            <td>Outcall</td>
+            <td>Returns</td>
+            <td>Return request</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>5862d1a1-2081-4e28-ad0a-cec43380ac7d</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>02/08/2023 18:14</td>
+            <td>02/08/2023 18:16</td>
+            <td>02-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Carla Morgan</td>
+            <td>Nathan Patel</td>
+            <td>Emily Chen</td>
+            <td>0-30</td>
+            <td>Evening</td>
+            <td>4.00</td>
+          </tr>
+          <tr>
+            <td>4c28acf4-2ea4-4be8-b8f1-113e676fc8b7</td>
+            <td>Inbound</td>
+            <td>Order Related</td>
+            <td>Delayed</td>
+            <td>Very bad</td>
+            <td>55bbace3-eb2e-4f67-aacb-4f8ee8512f75</td>
+            <td>09/08/2023 11:55</td>
+            <td>19/07/2023 23:50</td>
+            <td>02/08/2023 10:44</td>
+            <td>02/08/2023 11:14</td>
+            <td>NAGPUR</td>
+            <td>LifeStyle</td>
+            <td>979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Stanley Hogan</td>
+            <td>Harper Wong</td>
+            <td>Emily Chen</td>
+            <td>&gt;90</td>
+            <td>Split</td>
+            <td>2.50</td>
+          </tr>
+          <tr>
+            <td>e7ec72bb-65e9-4464-9c2b-8ce6b0e82a28</td>
+            <td>Inbound</td>
+            <td>Shopzilla Related</td>
+            <td>General Enquiry</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>c7d5eef8-d239-474c-8d24-542db2923b3c</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 10:09</td>
+            <td>01/08/2023 10:12</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Timothy Scott</td>
+            <td>Zoe Yamamoto</td>
+            <td>William Kim</td>
+            <td>On Job Training</td>
+            <td>Morning</td>
+            <td>4.00</td>
+          </tr>
+          <tr>
+            <td>68c596f2-4130-42f9-a140-b336261b1629</td>
+            <td>Inbound</td>
+            <td>Shopzilla Related</td>
+            <td>General Enquiry</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>c1e10375-7426-4b2a-aca6-17dc6bc9c7a3</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 10:15</td>
+            <td>01/08/2023 11:21</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Shannon Hicks</td>
+            <td>Aiden Patel</td>
+            <td>Olivia Tan</td>
+            <td>&gt;90</td>
+            <td>Morning</td>
+            <td>4.00</td>
+          </tr>
+          <tr>
+            <td>6b966653-0900-4d58-8b38-c17cfbdaf000</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Reverse Pickup Enquiry</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>9e0d7d55-d012-42f7-8e21-634942419386</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>02/08/2023 11:26</td>
+            <td>02/08/2023 11:44</td>
+            <td>02-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Mark Wilson</td>
+            <td>Scarlett Chen</td>
+            <td>John Smith</td>
+            <td>0-30</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>130dfefe-1d77-47f9-b759-546f24b6b909</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Missing</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>8153c646-4940-406f-992c-952ed08e9af8</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>02/08/2023 19:56</td>
+            <td>02/08/2023 20:06</td>
+            <td>02-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Mark Black</td>
+            <td>Sophia Sato</td>
+            <td>John Smith</td>
+            <td>&gt;90</td>
+            <td>Afternoon</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>4cc4df74-fcd3-413a-920d-ca3ad2dd0904</td>
+            <td>Inbound</td>
+            <td>Returns</td>
+            <td>Service Centres Related</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>4245d6df-49c6-491a-8724-125c4df82e75</td>
+            <td>09/08/2023 11:55</td>
+            <td>06/05/2023 21:41</td>
+            <td>01/08/2023 09:01</td>
+            <td>01/08/2023 09:03</td>
+            <td>RANCHI</td>
+            <td>Electronics</td>
+            <td>979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Amy Mendez</td>
+            <td>Sophia Sato</td>
+            <td>John Smith</td>
+            <td>0-30</td>
+            <td>Morning</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>c54459b3-ffb3-4ffa-a338-6fd179beb6b1</td>
+            <td>Inbound</td>
+            <td>Order Related</td>
+            <td>Installation/demo</td>
+            <td>Something</td>
+            <td>0cdaa1f1-02f2-40ec-9134-7cd0f92a6b3e</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 10:00</td>
+            <td>01/08/2023 10:04</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Jennifer May</td>
+            <td>Zoe Yamamoto</td>
+            <td>William Kim</td>
+            <td>On Job Training</td>
+            <td>Morning</td>
+            <td>3..00</td>
+          </tr>
+          <tr>
+            <td>deccfb1d-05d4-40b8-8371-15282c91bacb</td>
+            <td>Inbound</td>
+            <td>Cancellation</td>
+            <td>Not Needed</td>
+            <td style="background-color:#ce846e">Good</td>
+            <td>3f16b782-27cf-4831-b542-cd8bd60c0385</td>
+            <td style="background-color:#ce846e">09/08/2023 11:55</td>
+            <td>01/08/2023 21:05</td>
+            <td>01/08/2023 21:07</td>
+            <td>01-Aug-23</td>
+            <td style="background-color:#ce846e">HYDERABAD</td>
+            <td style="background-color:#ce846e">Electronics</td>
+            <td style="background-color:#ce846e">979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>Ryan Thompson</td>
+            <td>Olivia Wang</td>
+            <td>Emily Chen</td>
+            <td>31-60</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          <tr>
+            <td>6e51734e-9627-4a12-8062-877c3638627d</td>
+            <td>Inbound</td>
+            <td>Order Related</td>
+            <td>Installation/demo</td>
+            <td>All good</td>
+            <td>8a1ae638-4d8c-4a5e-bf1b-eb74f881fc3d</td>
+            <td>09/08/2023 11:55</td>
+            <td>18/07/2023 12:20</td>
+            <td>02/08/2023 20:03</td>
+            <td>02/08/2023 20:05</td>
+            <td>NAGPUR</td>
+            <td>Electronics</td>
+            <td>979.00</td>
+            <td style="background-color:#ce846e">427.00</td>
+            <td>David Butler</td>
+            <td>Olivia Wang</td>
+            <td>Emily Chen</td>
+            <td>31-60</td>
+            <td>Evening</td>
+            <td>5.00</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="full card">
+        <h2>11. Summary of Cleaning Process</h2>
+        <ol class="muted">
+          <li>Dataset Loaded: 85,907 rows × 20 columns.</li>
+          <li>Missing Values: Identified and imputed with Mode (categorical) or Median (numeric).</li>
+          <li>Duplicate Rows: Checked and none removed.</li>
+          <li>Outlier Analysis: Conducted using IQR method; numeric outliers highlighted.</li>
+          <li>Dataset Ready: Cleaned dataset with no missing values, ready for EDA, visualization, or machine learning.</li>
+        </ol>
+      </div>
+  
 </body>
 </html>
