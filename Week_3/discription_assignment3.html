@@ -1,250 +1,488 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Week 3 Assignment – Titanic Dataset (Exploratory Data Analysis)</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-      color: #333;
-    }
-    header {
-      background: #00796b;
-      color: #fff;
-      text-align: center;
-      padding: 25px 15px;
-    }
-    header h1 {
-      font-size: 28px;
-      margin: 0;
-    }
-    section {
-      max-width: 1000px;
-      margin: 25px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      font-size: 22px;
-      margin-bottom: 12px;
-      color: #004d40;
-      border-left: 4px solid #00796b;
-      padding-left: 8px;
-    }
-    h3 {
-      font-size: 18px;
-      margin: 15px 0 10px;
-      color: #00695c;
-    }
-    p {
-      margin: 10px 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background: #00796b;
-      color: #fff;
-    }
-    img {
-      display: block;
-      max-width: 90%;
-      margin: 12px auto;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-    }
-    .interpretation {
-      background: #e0f7fa;
-      border-left: 5px solid #00796b;
-      padding: 10px;
-      margin: 12px 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Assignment – EDA Detailed Explanation</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 34px;
+            color: #1f3c88;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 24px;
+            color: #1f3c88;
+            margin-top: 0;
+        }
+        h3 {
+            font-size: 18px;
+            margin-top: 15px;
+            color: #34495e;
+        }
+        p, li {
+            font-size: 15px;
+        }
+
+        /* Card Styling */
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #1f3c88;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Insights & Notes */
+        .insight {
+            background-color: #e2f0d9;
+            border-left: 5px solid #27ae60;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .note {
+            background-color: #fff4e5;
+            border-left: 5px solid #e67e22;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        /* Lists */
+        .list-title {
+            font-weight: bold;
+        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    margin: 20px 0;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>📄 Week 3 Assignment – Titanic Dataset (Exploratory Data Analysis)</h1>
-  </header>
+    <div class="container">
+        <h1>Week 3 Assignment – EDA Detailed Explanation</h1>
 
-  <section>
-    <h2>1. Introduction</h2>
-    <p>
-      The Titanic dataset is one of the most famous datasets for data analysis and machine learning. 
-      It provides demographic and survival information of passengers aboard the Titanic. 
-      In this assignment, we perform an <strong>Exploratory Data Analysis (EDA)</strong> to understand survival factors such as 
-      <strong>age, gender, class, and fare</strong>.
-    </p>
-  </section>
+       <div class="card">
+  <h2>Week 3 Assignment Overview – Exploratory Data Analysis (EDA)</h2> 
+  <p>
+    In <span class="highlight">Week 3</span>, the focus of the assignment is on performing 
+    <span class="highlight">Exploratory Data Analysis (EDA)</span> to gain meaningful insights from 
+    the provided <span class="highlight">E-commerce Customer Support Dataset</span>. The objective 
+    is to explore, clean, and understand the dataset by applying various data visualization and 
+    summarization techniques. This involves analyzing the structure, quality, and relationships 
+    of data through detailed tables, descriptive statistics, and multiple graphical representations. 
+  </p>
 
-  <section>
-    <h2>2. Dataset Information</h2>
-    <p>We begin by exploring the dataset using Pandas.</p>
-    <table>
-      <tr>
-        <th>Column Name</th><th>Non-Null Count</th><th>Missing Values</th><th>Data Type</th>
-      </tr>
-      <tr><td>survived</td><td>891</td><td>0</td><td>int64</td></tr>
-      <tr><td>pclass</td><td>891</td><td>0</td><td>int64</td></tr>
-      <tr><td>sex</td><td>891</td><td>0</td><td>object</td></tr>
-      <tr><td>age</td><td>714</td><td>177</td><td>float64</td></tr>
-      <tr><td>sibsp</td><td>891</td><td>0</td><td>int64</td></tr>
-      <tr><td>parch</td><td>891</td><td>0</td><td>int64</td></tr>
-      <tr><td>fare</td><td>891</td><td>0</td><td>float64</td></tr>
-      <tr><td>embarked</td><td>889</td><td>2</td><td>object</td></tr>
-      <tr><td>class</td><td>891</td><td>0</td><td>category</td></tr>
-      <tr><td>who</td><td>891</td><td>0</td><td>category</td></tr>
-      <tr><td>adult_male</td><td>891</td><td>0</td><td>bool</td></tr>
-      <tr><td>deck</td><td>203</td><td>688</td><td>category</td></tr>
-      <tr><td>embark_town</td><td>889</td><td>2</td><td>object</td></tr>
-      <tr><td>alive</td><td>891</td><td>0</td><td>category</td></tr>
-      <tr><td>alone</td><td>891</td><td>0</td><td>bool</td></tr>
-    </table>
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Total passengers = <b>891</b>.<br>
-      * The <code>age</code> column has <b>177 missing values</b> (714 non-null).<br>
-      * <code>deck</code> has a very high number of missing values.<br>
-      * Important categorical features include <b>sex, pclass, and embarked</b>.
+  <p>
+    The task requires generating a <span class="highlight">Dataset Information Table</span> to examine 
+    missing values and data types, followed by creating statistical summaries for numeric features 
+    such as <strong>Item_price</strong>, <strong>connected_handling_time</strong>, and 
+    <strong>CSAT Score</strong>. Next, several types of charts and plots—including 
+    <strong>distribution plots</strong>, <strong>count plots</strong>, <strong>bar charts</strong>, 
+    <strong>boxplots</strong>, and <strong>correlation heatmaps</strong>—are used to visually interpret 
+    patterns and trends. These visualizations help identify how different factors, such as 
+    customer service channels, product categories, handling time, and agent shifts, 
+    influence customer satisfaction.
+  </p>
+
+  <p>
+    Through this process, students are expected to demonstrate their ability to interpret data trends, 
+    detect anomalies, understand correlations, and extract actionable insights. By the end of this 
+    week’s assignment, the learner should be able to perform a comprehensive EDA, transforming raw data 
+    into a well-structured and meaningful analysis that can guide decision-making in improving 
+    <span class="highlight">customer support operations</span>.
+  </p>
+</div>
+        <!-- Section 1 -->
+        <div class="card">
+            <h2>1. Dataset Information Table</h2>
+<table>
+  
+  <thead>
+    <tr>
+      <th>Column Name</th>
+      <th>Non-Null Count</th>
+      <th>Missing Values</th>
+      <th>Data Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Unique id</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>channel_name</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>category</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Sub-category</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Customer Remarks</td><td>28742</td><td>57165</td><td>object</td></tr>
+    <tr><td>Order_id</td><td>67675</td><td>18232</td><td>object</td></tr>
+    <tr><td>order_date_time</td><td>17214</td><td>68693</td><td>object</td></tr>
+    <tr><td>Issue_reported at</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>issue_responded</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Survey_response_Date</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Customer_City</td><td>17079</td><td>68828</td><td>object</td></tr>
+    <tr><td>Product_category</td><td>17196</td><td>68711</td><td>object</td></tr>
+    <tr><td>Item_price</td><td>17206</td><td>68701</td><td>float64</td></tr>
+    <tr><td>connected_handling_time</td><td>242</td><td>85665</td><td>float64</td></tr>
+    <tr><td>Agent_name</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Supervisor</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Manager</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Tenure Bucket</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>Agent Shift</td><td>85907</td><td>0</td><td>object</td></tr>
+    <tr><td>CSAT Score</td><td>85907</td><td>0</td><td>int64</td></tr>
+  </tbody>
+</table>
+
+            <h3>Purpose:</h3>
+            <p>To get a high-level view of the dataset: how many rows are complete, what type of data is present, and which columns contain missing values.</p>
+            <h3>Explanation of Columns:</h3>
+            <ul>
+                <li><span class="list-title">Column Name →</span> Names of all features in your dataset.</li>
+                <li><span class="list-title">Non-Null Count →</span> Number of rows where data is available.</li>
+                <li><span class="list-title">Missing Values →</span> Number of rows where data is absent.</li>
+                <li><span class="list-title">Data Type →</span> Type of data: int64 (integer), float64 (decimal), object (text).</li>
+            </ul>
+            <h3>Insights:</h3>
+            <div class="insight">
+                Columns like Customer Remarks, Order_id, and Customer_City have large missing values.<br>
+                Missing Customer Remarks means many customers didn’t leave comments.<br>
+                Missing Order_id could indicate data collection errors or anonymization.<br>
+                Numeric columns like Item_price, connected_handling_time, and CSAT Score are mostly valid, which allows quantitative analysis.<br>
+                Categorical columns like channel_name and category are mostly complete, useful for group-wise analysis.
+            </div>
+            <h3>Why it matters:</h3>
+            <p>Missing data affects calculations (mean, median) and visualization. Helps decide whether to drop, impute, or ignore missing values in analysis.</p>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="card">
+            <h2>2. Numeric Feature Statistics Table</h2>
+            <table>
+ 
+  <thead>
+    <tr>
+      <th>Statistic</th>
+      <th>Item_price</th>
+      <th>connected_handling_time</th>
+      <th>CSAT Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Count (Non-Null)</td><td>17206</td><td>242</td><td>85907</td></tr>
+    <tr><td>Missing</td><td>68701</td><td>85665</td><td>0</td></tr>
+    <tr><td>Mean</td><td>5660.77</td><td>462.40</td><td>4.24</td></tr>
+    <tr><td>Median</td><td>979.0</td><td>427.0</td><td>5.0</td></tr>
+    <tr><td>Mode</td><td>999.0</td><td>282.0, 299.0, 301.0, 418.0</td><td>5</td></tr>
+    <tr><td>Std Dev</td><td>12825.73</td><td>246.30</td><td>1.38</td></tr>
+    <tr><td>Min</td><td>0.0</td><td>0.0</td><td>1.0</td></tr>
+    <tr><td>Max</td><td>164999.0</td><td>1986.0</td><td>5.0</td></tr>
+  </tbody>
+</table>
+            <h3>Purpose:</h3>
+            <p>To summarize key statistics of numeric features (Item_price, connected_handling_time, CSAT Score).</p>
+            <h3>Explanation of Metrics:</h3>
+            <ul>
+                <li><span class="list-title">Count (Non-Null):</span> Number of valid entries.</li>
+                <li><span class="list-title">Missing:</span> Count of missing values.</li>
+                <li><span class="list-title">Mean:</span> Average value.</li>
+                <li><span class="list-title">Median:</span> Middle value (less sensitive to outliers than mean).</li>
+                <li><span class="list-title">Mode:</span> Most frequent value (helps identify repeated patterns).</li>
+                <li><span class="list-title">Std Dev:</span> Measures spread or variability of data.</li>
+                <li><span class="list-title">Min / Max:</span> Smallest and largest values; identifies outliers.</li>
+            </ul>
+            <h3>Insights for Each Column:</h3>
+            <div class="insight">
+                <strong>Item_price:</strong> If mean &lt; median → right-skewed distribution (few expensive products). Max price much higher than mean → outliers exist.<br>
+                <strong>connected_handling_time:</strong> Mean may be high due to outliers (e.g., rare cases taking very long). Std deviation indicates how inconsistent handling times are across agents.<br>
+                <strong>CSAT Score:</strong> Typically 1–5. Mean closer to 4–5 indicates overall high customer satisfaction. Std deviation shows variation among customers’ feedback.
+            </div>
+            <h3>Why it matters:</h3>
+            <p>Helps identify central tendency, spread, and anomalies in numeric features. Important for later visualizations (histograms, boxplots, correlation).</p>
+        </div>
+
+ <!-- Section 3 -->
+<div class="card">
+    <h2>3. Distribution Plots (Histograms + KDE)</h2>
+    
+    <!-- Item Price Distribution -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/histo1.png" alt="Item Price Distribution" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            <strong>Item_price:</strong> Peak at low prices → majority of products are inexpensive. Long tail at high prices → few expensive products exist (skewed right).
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Item_price Distribution:</strong> Most products are low-cost → peak at lower prices. Long right tail → few expensive products exist (outliers). Insight: Customer satisfaction may vary slightly with price, but most interactions are for low-value products.
+        </div>
     </div>
-  </section>
 
-  <section>
-    <h2>3. Age & Fare Statistical Summary</h2>
-    <table>
-      <tr>
-        <th>Statistic</th><th>Age</th><th>Fare</th>
-      </tr>
-      <tr><td>Count (non-null)</td><td>714</td><td>891</td></tr>
-      <tr><td>Missing</td><td>177</td><td>0</td></tr>
-      <tr><td>Mean</td><td>29.7</td><td>32.2</td></tr>
-      <tr><td>Median</td><td>28.0</td><td>14.45</td></tr>
-      <tr><td>Mode</td><td>24.0</td><td>8.05</td></tr>
-      <tr><td>Standard Deviation</td><td>14.53</td><td>49.69</td></tr>
-      <tr><td>Minimum</td><td>0.42</td><td>0.0</td></tr>
-      <tr><td>Maximum</td><td>80.0</td><td>512.33</td></tr>
-    </table>
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Average passenger age = <b>29.7 years</b>.<br>
-      * Median fare = <b>14.45</b>, but maximum = <b>512.33</b>, showing extreme inequality in ticket pricing.<br>
-      * 177 missing age values highlight incomplete passenger records.
-    </div>
-  </section>
-
-  <section>
-    <h2>4. Charts and Interpretations</h2>
-
-    <h3>4.1 Age Distribution</h3>
-    <img src="outputs/age.png"  alt="Age Distribution">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Most passengers were <b>20–40 years old</b>.<br>
-      * Peak at around <b>24 years (mode)</b>.<br>
-      * Very few infants and elderly passengers.<br>
-      * Suggests Titanic carried a <b>young to middle-aged majority</b>.
+    <!-- Connected Handling Time Distribution -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/histo2.png" alt="Connected Handling Time Distribution" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            <strong>connected_handling_time:</strong> Short peaks → most requests handled quickly. Long tail → rare cases taking long time → may decrease CSAT.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Connected_handling_time Distribution:</strong> Peak at short times → most requests resolved quickly. Long tail → rare cases taking much longer. Insight: Outliers (long handling times) may negatively affect CSAT. Process improvement could reduce these extreme cases.
+        </div>
     </div>
 
-    <h3>4.2 Fare Distribution</h3>
-    <img src="outputs/fare.png" alt="Fare Distribution">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Most passengers paid <b>under 50 units</b>.<br>
-      * Extreme outliers with fares above <b>500</b> show <b>wealthy 1st class passengers</b>.<br>
-      * Median fare is much lower, proving Titanic mostly carried <b>economy travelers</b>.
+    <!-- CSAT Score Distribution -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/histo3.png" alt="CSAT Score Distribution" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            <strong>CSAT Score:</strong> Peaks at 4–5 → majority satisfied. Small peaks at 1–2 → unhappy customers, focus for improvement.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>CSAT Score Distribution:</strong> Peak at 4–5 → majority of customers are satisfied. Small peaks at 1–2 → indicate dissatisfied customers. Insight: Service quality is generally good, but low CSAT cases need investigation.
+        </div>
     </div>
 
-    <h3>4.3 Passenger Count by Class</h3>
-    <img src="outputs/passenger_class.png" alt="Passenger Count by Class">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Largest group = <b>3rd Class passengers</b>.<br>
-      * Fewest passengers = <b>1st Class</b>, but they had more privileges.<br>
-      * Highlights strong <b>social and economic diversity</b>.
+    <!-- General Section Info -->
+    <h3>Purpose:</h3>
+    <p>To visualize the frequency of numeric values and distribution shape. KDE (Kernel Density Estimate) shows smooth probability distribution.</p>
+    <h3>Why it matters:</h3>
+    <p>Helps identify data distribution, skewness, and outliers visually. Guides decisions for scaling, transformations, or outlier treatment.</p>
+    <p><strong>Key Takeaway:</strong> Histograms + KDE show data concentration, spread, skewness, and potential outliers.</p>
+</div>
+
+
+      <!-- Section 4: Count Plots -->
+<div class="card">
+    <h2>4. Count Plots for Categorical Features</h2>
+
+      <!-- Channel Name Count Plot -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/count1.png" alt="Channel Name Count Plot" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Channel_name:</strong> Shows which communication channel (email, chat, phone) is used most. High-count channels → heavier workload → monitor performance. Low-count channels → fewer interactions → may need fewer resources.
+        </div>
     </div>
 
-    <h3>4.4 Passenger Count by Gender</h3>
-    <img src="outputs/sex.png" alt="Passenger Count by Gender">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * More <b>males</b> than females.<br>
-      * This imbalance influenced survival analysis, as fewer women had <b>higher survival rates</b>.
+    <!-- Category Count Plot -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/count2.png" alt="Category Count Plot" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Category:</strong> Reveals top complaint/product categories. Categories with high counts → frequently reported issues → prioritize improvements.
+        </div>
     </div>
 
-    <h3>4.5 Survival by Gender</h3>
-    <img src="outputs/survival_gender.png" alt="Survival by Gender">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * <b>Women had a much higher survival rate</b> than men.<br>
-      * Supports the “<b>women and children first</b>” rescue policy.
+    <!-- Sub-category (Top 10) Count Plot -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/count3.png" alt="Sub-category Count Plot" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Sub-category (Top 10 only):</strong> Only top 10 plotted → readable chart. Some sub-categories dominate → indicates specific problem areas within a category.
+        </div>
     </div>
 
-    <h3>4.6 Survival by Passenger Class</h3>
-    <img src="outputs/survival_class.png" alt="Survival by Class">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * <b>1st Class passengers survived the most</b>, while <b>3rd Class passengers had the lowest survival rate</b>.<br>
-      * Wealth and social class played a critical role in survival chances.
+    <!-- Agent Shift Count Plot -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/count 4.png" alt="Agent Shift Count Plot" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Agent Shift:</strong> Visualizes distribution of tickets per shift. Unequal distribution → may explain differences in CSAT by shift.
+        </div>
     </div>
 
-    <h3>4.7 Age vs Survival (Box Plot)</h3>
-    <img src="outputs/age_distribution.png" alt="Age vs Survival">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Survivors were often <b>slightly younger</b>.<br>
-      * Children had better survival chances.<br>
-      * Elderly passengers had <b>very low survival rates</b>.
+    <!-- Tenure Bucket Count Plot -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/count5.png" alt="Tenure Bucket Count Plot" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            <strong>Tenure Bucket:</strong> Shows experience levels of agents. Majority in mid-range → may influence handling efficiency and satisfaction.
+        </div>
     </div>
 
-    <h3>4.8 Fare vs Survival (Box Plot)</h3>
-    <img src="outputs/fare_distribution.png" alt="Fare vs Survival">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * Survivors generally <b>paid higher fares</b>.<br>
-      * Passengers with cheaper tickets (3rd class) had a lower chance of survival.<br>
-      * Shows <b>class and wealth strongly influenced survival</b>.
+    <h3>Purpose:</h3>
+    <p>To see frequency of each category.</p>
+
+    <h3>Why it matters:</h3>
+    <p>Identifies hotspots, workload distribution, and potential improvement areas.</p>
+ <h3>Explanation by Column:</h3>
+            <ul>
+                <li><span class="list-title">channel_name:</span> Which communication channel (email, chat, phone) is most used. Insights: focus training/resources on channels with high volume.</li>
+                <li><span class="list-title">category:</span> Most reported product/service categories. Helps identify problem-prone product lines.</li>
+                <li><span class="list-title">Sub-category (Top 10 only):</span> Only top 10 plotted → prevents x-axis overlap. Shows detailed product/service issues clearly.</li>
+                <li><span class="list-title">Agent Shift:</span> Shows distribution of workload across shifts. Could relate to CSAT variation by shift.</li>
+                <li><span class="list-title">Tenure Bucket:</span> Shows experience distribution among agents. Helps correlate experience with customer satisfaction.</li>
+            </ul>
+    <p><strong>Key Takeaway:</strong> Count plots identify volume hotspots, workload, and potential problem areas.</p>
+</div>
+
+       <!-- Section 5: Bar Plots -->
+<div class="card">
+    <h2>5. Bar Plots (Average CSAT Score by Category)</h2>
+
+    <!-- CSAT by Channel -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/bar1.png" alt="CSAT by Channel" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            Channels with low average CSAT → need attention. High average CSAT → best practices can be replicated.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            Example: Phone support average CSAT = 4.8 → excellent. Chat = 4.8 (great), Email = 4.2 (moderate).
+        </div>
     </div>
 
-    <h3>4.9 Correlation Heatmap</h3>
-    <img src="outputs/correlation.png" alt="Correlation Heatmap">
-    <div class="interpretation">
-      📌 <strong>Interpretation:</strong><br>
-      * <b>Fare is positively correlated with survival</b> → higher ticket, higher chance.<br>
-      * <b>Sex (male) is negatively correlated with survival</b> → males survived less.<br>
-      * <b>Pclass is negatively correlated with survival</b> → lower-numbered class = better survival.<br>
-      * Age correlation is weak, but <b>children had slightly better chances</b>.
+    <!-- CSAT by Category -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/bar2.png" alt="CSAT by Category" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            Top 10 categories only → readable chart. Low CSAT categories → identify product/service issues.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            Helps prioritize improvement areas based on average CSAT.
+        </div>
     </div>
-  </section>
 
-  <section>
-    <h2>5. Conclusion</h2>
-    <p>
-      From the Titanic dataset analysis, the main findings are:
-    </p>
-    <ul>
-      <li><b>Gender and Class were the most important factors in survival.</b></li>
-      <li>Women and children had higher chances.</li>
-      <li>Wealthier (1st Class) passengers survived at much higher rates.</li>
-      <li>The majority of passengers were young adults, but not all survived equally.</li>
-      <li>Fare distribution shows huge inequality, directly linked to survival chances.</li>
-    </ul>
-    <p>
-      This analysis highlights how <b>social and economic inequalities impacted survival</b> during the Titanic disaster.
-    </p>
-  </section>
+    <h3>Purpose:</h3>
+    <p>Shows average satisfaction (CSAT) per category/channel.</p>
 
+    <h3>Why it matters:</h3>
+    <p>Supports data-driven decision-making for improving service quality.</p>
+
+    <p><strong>Key Takeaway:</strong> Bar plots highlight which channels/categories impact customer satisfaction and prioritize improvements.</p>
+</div>
+
+
+        <!-- Section 6: Boxplots -->
+<div class="card">
+    <h2>6. Boxplots (Numeric Features vs CSAT Score)</h2>
+
+    <!-- Item Price vs CSAT -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/box1.png" alt="Item Price vs CSAT" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            Median item price fairly consistent across CSAT scores → price does not strongly affect satisfaction. Outliers may indicate very high-value purchases with low satisfaction.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            Boxplots reveal relationships, spread, medians, and outliers. Helps identify process improvements.
+        </div>
+    </div>
+
+    <!-- Connected Handling Time vs CSAT -->
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/box2.png" alt="Connected Handling Time vs CSAT" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            Median handling time higher for lower CSAT scores → longer handling → unhappy customers. Outliers at high handling times → significant dissatisfaction risk.
+        </div>
+    </div>
+
+    <h3>Purpose:</h3>
+    <p>Visualizes the spread of numeric features across CSAT ratings.</p>
+
+    <h3>Why it matters:</h3>
+    <p>Helps identify patterns, outliers, and relationships visually. Guides business decisions (e.g., reduce handling time for high-value items).</p>
+<h3>Boxplot components:</h3>
+            <ul>
+                <li>Box: Middle 50% of data (IQR)</li>
+                <li>Line inside box: Median</li>
+                <li>Whiskers: Range excluding outliers</li>
+                <li>Dots outside whiskers: Outliers</li>
+            </ul>
+    <p><strong>Key Takeaway:</strong> Boxplots reveal relationships, spread, medians, and outliers. Helps identify process improvements.</p>
+</div>
+
+        <!-- Section 7: Correlation Heatmap -->
+<div class="card">
+    <h2>7. Correlation Heatmap</h2>
+
+    <div style="margin-top:15px; text-align:center;">
+        <img src="outputs/corr.png" alt="Correlation Heatmap" style="width:80%; max-width:800px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+        <h3>Insights:</h3>
+        <div class="insight">
+            connected_handling_time vs CSAT Score: Negative correlation → longer handling reduces satisfaction.<br>
+            Item_price vs CSAT Score: Weak correlation → price not strongly linked to satisfaction.
+        </div>
+        <h3>Interpretation:</h3>
+        <div class="insight">
+            Correlation heatmap helps identify numeric features influencing satisfaction, guiding business decisions and ML models.
+        </div>
+    </div>
+
+    <h3>Purpose:</h3>
+    <p>Shows linear relationships between numeric features.</p>
+
+    <h3>Why it matters:</h3>
+    <p>Helps identify features that influence satisfaction. Useful for predictive modeling (e.g., machine learning).</p>
+<h3>Correlation range:</h3>
+            <ul>
+                <li>1 → strong positive correlation</li>
+                <li>-1 → strong negative correlation</li>
+                <li>0 → no correlation</li>
+            </ul>
+    <p><strong>Key Takeaway:</strong> Correlation heatmap helps identify numeric features influencing satisfaction, guiding business decisions and ML models.</p>
+</div>
+
+    </div>
 </body>
 </html>
