@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 5 Assignment - Supervised Learning (Regression)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    h1, h2, h3, h4 {
+        color: #2c3e50;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .step {
+        background-color: #ffffff;
+        border-left: 6px solid #3498db;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    pre {
+        background-color: #ecf0f1;
+        padding: 10px;
+        overflow-x: auto;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 10px;
+    }
+    table, th, td {
+        border: 1px solid #bdc3c7;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #3498db;
+        color: white;
+    }
+    .formula {
+        background-color: #dfe6e9;
+        padding: 10px;
+        margin: 10px 0;
+        font-family: monospace;
+
+        
+    
+    }
+     table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px 10px;border-bottom:1px solid #eef2f7;text-align:left}
+    th{background:#238b6c;font-weight:600;color:#e5e8f0}
+    .table-scroll {
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid #eef2f7;
+      max-height: 450px;
+    }
+    .pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .small{font-size:13px;color:var(--muted)}
+    .meta{color:var(--muted);font-size:13px}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <header>
+      <div>
+        <h1>Week 5 Assignment – Supervised Learning (Regression)</h1>
+        <div class="meta">Course: Applied Data Science with AI <br> •Instructor: Dr. Muhammad Mohsin Nazir</div>
+      
+      <div style="margin-left:auto;text-align:right">
+        <div class="pill">Source: Kaggel.com</div>
+        <div class="small">DataSet Name: <strong>Customer_support_data</strong></div>
+      </div>
+    </div>
+    </header>
+
+   
+
+
+<div class="step">
+    <h2>Overview Of Week 5 Assignment</h2>
+<h3>Goal:</h3>
+<p>Build a baseline regression model to predict a numeric target variable from your dataset. In your case:</p>
+<ul>
+<li><strong>Target variable:</strong> CSAT Score (Customer Satisfaction Score)</li>
+<li><strong>Features:</strong> Other numeric or encoded columns like Item_price, connected_handling_time, etc.</li>
+</ul>
+<p>The assignment focuses on supervised learning using regression, splitting the data into training and testing sets, building a Linear Regression model, evaluating it with MAE, MSE, RMSE, Explained Variance, and visualizing predictions.</p>
+</div>
+
+<div class="step">
+<h2>Step 1: Load Dataset</h2>
+<ul>
+<li>Load your dataset (<code>Customer_support_data.csv</code>) using Pandas.</li>
+<li>Check the first 10 rows to understand the structure and columns.</li>
+<li>Identify the target column (<strong>CSAT Score</strong>) and feature columns (numeric predictors).</li>
+</ul>
+
+
+      <h2>🔎 First 5 Rows (Preview)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Unique id</th><th>channel_name</th><th>category</th><th>Sub-category</th><th>Customer Remarks</th>
+              <th>Order_id</th><th>order_date_time</th><th>Issue_reported at</th><th>issue_responded</th>
+              <th>Survey_response_Date</th><th>Customer_City</th><th>Product_category</th><th>Item_price</th>
+              <th>connected_handling_time</th><th>Agent_name</th><th>Supervisor</th><th>Manager</th>
+              <th>Tenure Bucket</th><th>Agent Shift</th><th>CSAT Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td><td>Outcall</td><td>Product Queries</td><td>Life Insurance</td><td>—</td>
+              <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td><td>—</td><td>01/08/2023 11:13</td><td>01/08/2023 11:47</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Richard Buchanan</td><td>Mason Gupta</td><td>Jennifer Nguyen</td>
+              <td>On Job Training</td><td>Morning</td><td>5</td>
+            </tr>
+            <tr>
+              <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td><td>—</td>
+              <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td><td>—</td><td>01/08/2023 12:52</td><td>01/08/2023 12:54</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Vicki Collins</td><td>Dylan Kim</td><td>Michael Lee</td>
+              <td>>90</td><td>Morning</td><td>5</td>
+            </tr>
+            <tr>
+              <td>200814dd-27c7-4149-ba2b-bd3af3092880</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td><td>—</td>
+              <td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td><td>—</td><td>01/08/2023 20:16</td><td>01/08/2023 20:38</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Duane Norman</td><td>Jackson Park</td><td>William Kim</td>
+              <td>On Job Training</td><td>Evening</td><td>5</td>
+            </tr>
+            <tr>
+              <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td><td>Inbound</td><td>Returns</td><td>Reverse Pickup Enquiry</td><td>—</td>
+              <td>5aed0059-55a4-4ec6-bb54-97942092020a</td><td>—</td><td>01/08/2023 20:56</td><td>01/08/2023 21:16</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Patrick Flores</td><td>Olivia Wang</td><td>John Smith</td>
+              <td>>90</td><td>Evening</td><td>5</td>
+            </tr>
+            <tr>
+              <td>ba903143-1e54-406c-b969-46c52f92e5df</td><td>Inbound</td><td>Cancellation</td><td>Not Needed</td><td>—</td>
+              <td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td><td>—</td><td>01/08/2023 10:30</td><td>01/08/2023 10:32</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Christopher Sanchez</td><td>Austin Johnson</td><td>Michael Lee</td>
+              <td>0-30</td><td>Morning</td><td>5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+</div>
+
+<div class="step">
+<h2>Step 2: Preprocessing</h2>
+<ul>
+<li>Drop high-cardinality ID columns: <code>Customer_ID</code>, <code>Order_ID</code>, <code>Product_ID</code> → These don’t help the model and may cause memory issues.</li>
+<li>Handle missing values: Fill missing numeric values with median.</li>
+<li>Encode categorical variables:
+    <ul>
+        <li>Only encode low-cardinality categorical columns (less than 20 unique values).</li>
+        <li>Use one-hot encoding (<code>pd.get_dummies</code>) and avoid creating too many dummy columns to prevent memory errors.</li>
+    </ul>
+</li>
+<li>Result: Clean, numeric-only dataset ready for regression.</li>
+</ul>
+
+
+<h2>Preprocessing Summary</h2>
+<p>✅ Preprocessing Done!</p>
+<p><strong>Shape after preprocessing:</strong> (85907, 3)</p>
+<p><strong>Explanation:</strong> <br>
+Shape = (Rows, Columns) <br>
+Rows = number of customer interactions <br>
+Columns = number of features (predictors) + target (CSAT Score)</p>
+
+
+</div>
+
+<div class="step">
+<h2>Step 3: Define Features and Target</h2>
+<ul>
+<li>Separate features (<code>X</code>) and target (<code>y</code>).</li>
+<li>Features are the predictor variables (e.g., Item_price, connected_handling_time).</li>
+<li>Target is CSAT Score.</li>
+</ul>
+<h2>Features and Target</h2>
+<p><strong>Features Shape:</strong> (85907, 2) → Predictor variables used for regression</p>
+<p><strong>Target Shape:</strong> (85907,) → CSAT Score values to predict</p>
+</div>
+
+<div class="step">
+<h2>Step 4: Train/Test Split</h2>
+<ul>
+<li>Split the dataset into:
+    <ul>
+        <li>Training set: 80% → to fit the model</li>
+        <li>Testing set: 20% → to evaluate the model</li>
+    </ul>
+</li>
+<li>Use <code>train_test_split()</code> with a random state for reproducibility.</li>
+</ul>
+
+<p>Train/Test Split Completed</p>
+<p><strong>Training Samples:</strong> 68,725 → Used to train the regression model</p>
+<p><strong>Testing Samples:</strong> 17,182 → Used to evaluate model predictions</p>
+
+</div>
+
+<div class="step">
+<h2>Step 5: Build Linear Regression Model</h2>
+<ul>
+<li>Use <code>sklearn.linear_model.LinearRegression</code> to train the model on the training set.</li>
+<li><strong>Linear Regression formula:</strong></li>
+<div class="formula">
+y = β0 + β1*x1 + β2*x2 + ⋯ + βn*xn
+</div>
+<p>Where:</p>
+<ul>
+<li>y = predicted target (CSAT Score)</li>
+<li>xi = features</li>
+<li>βi = coefficients (effect of each feature on CSAT Score)</li>
+<li>β0 = intercept</li>
+</ul>
+</ul>
+
+<h2>Linear Regression Coefficients</h2>
+<p><strong>Item_price:</strong> -0.000021 → Effect on CSAT Score per unit change in Item_price</p>
+<p><strong>connected_handling_time:</strong> 0.000140 → Effect on CSAT Score per unit change in connec
+</div>
+
+<div class="step">
+<h2>Step 6: Predict on Testing Set</h2>
+<ul>
+<li>Calculate predicted CSAT scores: <code>y_pred = model.predict(X_test)</code></li>
+<li>Calculate residuals: <code>residual = y_test - y_pred</code></li>
+</ul>
+<h2>Model Evaluation Metrics (Manual Calculation)</h2>
+<p><strong>Formulas used:</strong></p>
+<ul>
+    <li>MAE (Mean Absolute Error) = (1/n) Σ |y<sub>i</sub> - ŷ<sub>i</sub>|</li>
+    <li>MSE (Mean Squared Error) = (1/n) Σ (y<sub>i</sub> - ŷ<sub>i</sub>)²</li>
+    <li>RMSE (Root Mean Squared Error) = √MSE</li>
+    <li>Explained Variance = 1 - var(residuals) / var(y<sub>test</sub>)</li>
+</div>
+
+<div class="step">
+<h2>Step 7: Evaluate Model</h2>
+<ul>
+<li>MAE (Mean Absolute Error): Average absolute difference between predicted and actual values
+<div class="formula">
+MAE = (1/n) Σ |yi - ŷi|
+</div>
+</li>
+<li>MSE (Mean Squared Error): Average squared difference
+<div class="formula">
+MSE = (1/n) Σ (yi - ŷi)^2
+</div>
+</li>
+<li>RMSE (Root Mean Squared Error): Square root of MSE
+<div class="formula">
+RMSE = √MSE
+</div>
+</li>
+<li>Explained Variance: How much variance of target is explained by model</li>
+</ul>
+
+
+<h2>Model Evaluation Metrics (Values)</h2>
+<p><strong>MAE:</strong> 1.04 → Average absolute prediction error</p>
+<p><strong>MSE:</strong> 1.87 → Average squared prediction error</p>
+<p><strong>RMSE:</strong> 1.37 → Standard deviation of prediction errors</p>
+<p><strong>Explained Variance:</strong> 0.01 → Portion of variance explained by model</p>
+</div>
+
+<div class="step">
+<h2>Step 8: Visualize Results</h2>
+<ul>
+<li><strong>Predicted vs Actual plot:</strong> Shows how well predictions match real CSAT Scores.</li>
+<li><strong>Residual plot:</strong> Shows the difference between actual and predicted values to check for patterns/errors.</li>
+</ul>
+
+<div style="text-align:center; margin-bottom:18px;">
+        <img src="plots_graph/act1.png" 
+             alt="Correlation Analysis Visualization" 
+             style="width:100%; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+    </div>
+
+    <div style="text-align:center; margin-bottom:18px;">
+        <img src="plots_graph/act2.png" 
+             alt="Correlation Analysis Visualization" 
+             style="width:100%; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+    </div>
+</div>
+
+<div class="step">
+<h2>Step 9: Display Predicted vs Actual Table</h2>
+<ul>
+<li>Create a DataFrame with <strong>Actual</strong>, <strong>Predicted</strong>, <strong>Residual</strong> columns.</li>
+<li>Show first 10 rows for clarity.</li>
+</ul>
+
+<h2>Predicted vs Actual CSAT</h2>
+<table class="table-scroll">
+    <thead>
+        <tr>
+            <th>Index</th>
+            <th>Actual CSAT</th>
+            <th>Predicted CSAT</th>
+            <th>Residual</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>67871</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>40187</td><td>5</td><td>4.278021</td><td>0.721979</td></tr>
+        <tr><td>60075</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>69560</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>2605</td><td>5</td><td>4.275076</td><td>0.724924</td></tr>
+        <tr><td>73327</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>4382</td><td>1</td><td>4.260457</td><td>-3.260457</td></tr>
+        <tr><td>10405</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>24494</td><td>5</td><td>4.260457</td><td>0.739543</td></tr>
+        <tr><td>5473</td><td>1</td><td>4.260457</td><td>-3.260457</td></tr>
+    </tbody>
+</table>
+</div>
+<div class="step">
+    <h2>📌 Project Milestone – Week 5</h2>
+    <p><strong>"Build your first baseline regression model."</strong></p>
+    <h3>Explanation in context of your project (E-commerce Recommendation System):</h3>
+    <ul>
+        <li>✅ Completed data preprocessing (cleaning, encoding, and handling missing values).</li>
+        <li>✅ Selected features: <strong>Item_price</strong>, <strong>connected_handling_time</strong> and target: <strong>CSAT Score</strong>.</li>
+        <li>✅ Split the dataset into training (80%) and testing (20%) sets.</li>
+        <li>✅ Trained a <strong>Linear Regression model</strong> as the first predictive baseline.</li>
+        <li>✅ Evaluated model using <strong>MAE, MSE, RMSE, Explained Variance</strong> to provide reference performance metrics.</li>
+    </ul>
+    <p>This milestone demonstrates the first working predictive model for your semester-long project and sets the foundation for further analysis and model optimization.</p>
+</div>
+</div>
+</body>
+</html>
