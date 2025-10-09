@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Week 4 — Correlation Analysis (Professional Report)</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#ffffff;--muted:#6b7280;--accent:#0f6cff;--success:#16a34a}
+    body{font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#111827;margin:0;padding:28px}
+    .container{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+    header h1{font-size:20px;margin:0}
+    .meta{color:var(--muted);font-size:13px}
+    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(14,30,37,0.06);margin-bottom:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .full{grid-column:1/-1}
+    h2{font-size:16px;margin:0 0 10px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px 10px;border-bottom:1px solid #eef2f7;text-align:left}
+    th{background:#026346;font-weight:600;color:#e5e8f0}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:#f1f5f9;color:#0f172a;padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px}
+    .stat{font-size:20px;font-weight:700}
+    .small{font-size:13px;color:var(--muted)}
+    .pre{background:#0b1220;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px}
+    .table-scroll{overflow:auto;border-radius:8px;border:1px solid #eef2f7}
+    .highlight{color:var(--accent);font-weight:700}
+    .success{color:var(--success);font-weight:700}
+    .kpi{display:flex;gap:18px;align-items:center}
+    .table-scroll {
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid #eef2f7;
+      max-height: 450px;
+    }
+
+    /* Highlight colors */
+    .val1 { background: #0d47a1; color: white; font-weight: bold; }  /* 1.00 */
+    .pos { background: #b3e5fc; }     /* Positive <1 */
+    .neg { background: #ffcdd2; }     /* Negative */
+    .zero { background: #e0e0e0; }    /* 0.00 */
+    .negzero { background: #fff9c4; } /* -0.00 */
+
+    .pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 16px;
+    }
+
+    /* Legend styling */
+    .legend {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .color-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .darkblue { background: #0d47a1; }
+    .aqua { background: #b3e5fc; }
+    .coral { background: #e6f3c0; }
+    .gray { background: #e0e0e0; }
+    .yellow { background: #fff9c4; }
+
+    @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Week 4 — Correlation Analysis (Professional Final Version)</h1>
+        <div class="meta">Course: Applied Data Science with AI • Instructor: Dr. Muhammad Mohsin Nazir</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="pill">Status: Completed</div>
+        <div class="small">Report generated: <strong>Week 4</strong></div>
+      </div>
+    </header>
+
+    <div class="card ">
+  <h2>📘 Week 4 — Detailed Overview / Introduction</h2>
+  <p>
+    Week 4 of the Data Analytics project marks a critical transition from basic data preparation toward understanding the <b>statistical relationships</b> among variables. 
+    The main goal of this phase was to explore how different features within the dataset relate to one another and, more importantly, how they influence the <b>target variable</b> — typically representing customer satisfaction or a performance score.
+  </p>
+
+  <p>
+    This week’s analytical task focused on <b>correlation analysis</b>, a fundamental step before predictive modeling. 
+    By computing the correlation coefficients between numerical features, you identified patterns of association that help in selecting relevant predictors and removing redundant or non-informative variables. 
+    Understanding these relationships is essential for improving model accuracy and interpretability in later stages such as regression or classification.
+  </p>
+
+  <p>
+    The workflow began with <b>loading and cleaning the dataset</b> (<code>Customer_support_data.csv</code>), ensuring no missing or inconsistent values remained. 
+    Categorical features were <b>encoded</b> using label encoding to make them suitable for numerical computations. 
+    Next, the <b>correlation matrix</b> was generated to visually and numerically compare inter-variable relationships. 
+    Using <b>Seaborn’s heatmap visualization</b>, the strongest and weakest correlations were identified with a color-coded representation for easier interpretation.
+  </p>
+
+  <p>
+    To deepen conceptual understanding, a <b>manual correlation computation</b> was performed for one of the most significant feature pairs. 
+    This step-by-step calculation demonstrated how correlation values are mathematically derived using mean-centered values and standard deviations, thereby reinforcing both statistical intuition and technical accuracy.
+  </p>
+
+  <p>
+    The week concluded by highlighting the <b>Top 3 predictive features</b> most correlated with the target variable. 
+    These insights serve as a foundation for Week 5, where these features will be utilized to build <b>predictive models</b> that forecast customer satisfaction or business outcomes. 
+    In essence, Week 4 established a data-driven pathway for selecting variables that matter — paving the way for robust model development and validation in subsequent stages.
+  </p>
+
+  <p class="highlight">
+     <b>In summary:</b> Week 4 successfully bridged exploratory data analysis with predictive modeling preparation — transforming raw data into actionable insights through systematic correlation assessment and statistical reasoning.
+  </p>
+</div>
+
+<div class="card ">
+  <h2> Tasks Performed in Your Vs Code</h2>
+  <ul>
+    <li>✅ Loaded dataset (<code>Customer_support_data.csv</code>).</li>
+    <li>✅ Cleaned missing values and encoded categorical variables.</li>
+    <li>✅ Calculated correlation matrix between all numeric features.</li>
+    <li>✅ Created visual correlation heatmap using <b>Seaborn</b>.</li>
+    <li>✅ Identified top 3 correlated features with the target variable.</li>
+    <li>✅ Performed manual step-by-step correlation calculation for deeper understanding.</li>
+  </ul>
+</div>
+
+<div class="card ">
+  <h2>📊 Outputs Produced</h2>
+  <ul>
+    <li>📈 Correlation Matrix (numeric + color-coded heatmap)</li>
+    <li>🧠 Top 3 correlated features identified</li>
+    <li>🧮 Manual correlation computation table</li>
+    <li>🎨 Pairplot showing feature relationships</li>
+  </ul>
+</div>
+
+    <section class="card grid">
+      <div>
+        <h2>✅ Dataset Loaded Successfully</h2>
+        <div class="kpi">
+          <div>
+            <div class="stat">85,907</div>
+            <div class="small">Rows</div>
+          </div>
+          <div>
+            <div class="stat">20</div>
+            <div class="small">Columns</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>📍 Target Column Detected</h2>
+        <p class="small">Automatically identified target: <span class="highlight">CSAT Score</span></p>
+      </div>
+
+      <div class="full">
+        <h2>📊 Dataset Overview</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Column Index</th><th>Column Name</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td>Unique id</td></tr>
+              <tr><td>1</td><td>channel_name</td></tr>
+              <tr><td>2</td><td>category</td></tr>
+              <tr><td>3</td><td>Sub-category</td></tr>
+              <tr><td>4</td><td>Customer Remarks</td></tr>
+              <tr><td>5</td><td>Order_id</td></tr>
+              <tr><td>6</td><td>order_date_time</td></tr>
+              <tr><td>7</td><td>Issue_reported at</td></tr>
+              <tr><td>8</td><td>issue_responded</td></tr>
+              <tr><td>9</td><td>Survey_response_Date</td></tr>
+              <tr><td>10</td><td>Customer_City</td></tr>
+              <tr><td>11</td><td>Product_category</td></tr>
+              <tr><td>12</td><td>Item_price</td></tr>
+              <tr><td>13</td><td>connected_handling_time</td></tr>
+              <tr><td>14</td><td>Agent_name</td></tr>
+              <tr><td>15</td><td>Supervisor</td></tr>
+              <tr><td>16</td><td>Manager</td></tr>
+              <tr><td>17</td><td>Tenure Bucket</td></tr>
+              <tr><td>18</td><td>Agent Shift</td></tr>
+              <tr><td>19</td><td>CSAT Score</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🔎 First 5 Rows (Preview)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Unique id</th><th>channel_name</th><th>category</th><th>Sub-category</th><th>Customer Remarks</th>
+              <th>Order_id</th><th>order_date_time</th><th>Issue_reported at</th><th>issue_responded</th>
+              <th>Survey_response_Date</th><th>Customer_City</th><th>Product_category</th><th>Item_price</th>
+              <th>connected_handling_time</th><th>Agent_name</th><th>Supervisor</th><th>Manager</th>
+              <th>Tenure Bucket</th><th>Agent Shift</th><th>CSAT Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td><td>Outcall</td><td>Product Queries</td><td>Life Insurance</td><td>—</td>
+              <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td><td>—</td><td>01/08/2023 11:13</td><td>01/08/2023 11:47</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Richard Buchanan</td><td>Mason Gupta</td><td>Jennifer Nguyen</td>
+              <td>On Job Training</td><td>Morning</td><td>5</td>
+            </tr>
+            <tr>
+              <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td><td>—</td>
+              <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td><td>—</td><td>01/08/2023 12:52</td><td>01/08/2023 12:54</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Vicki Collins</td><td>Dylan Kim</td><td>Michael Lee</td>
+              <td>>90</td><td>Morning</td><td>5</td>
+            </tr>
+            <tr>
+              <td>200814dd-27c7-4149-ba2b-bd3af3092880</td><td>Inbound</td><td>Order Related</td><td>Installation/demo</td><td>—</td>
+              <td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td><td>—</td><td>01/08/2023 20:16</td><td>01/08/2023 20:38</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Duane Norman</td><td>Jackson Park</td><td>William Kim</td>
+              <td>On Job Training</td><td>Evening</td><td>5</td>
+            </tr>
+            <tr>
+              <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td><td>Inbound</td><td>Returns</td><td>Reverse Pickup Enquiry</td><td>—</td>
+              <td>5aed0059-55a4-4ec6-bb54-97942092020a</td><td>—</td><td>01/08/2023 20:56</td><td>01/08/2023 21:16</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Patrick Flores</td><td>Olivia Wang</td><td>John Smith</td>
+              <td>>90</td><td>Evening</td><td>5</td>
+            </tr>
+            <tr>
+              <td>ba903143-1e54-406c-b969-46c52f92e5df</td><td>Inbound</td><td>Cancellation</td><td>Not Needed</td><td>—</td>
+              <td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td><td>—</td><td>01/08/2023 10:30</td><td>01/08/2023 10:32</td>
+              <td>01-Aug-23</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Christopher Sanchez</td><td>Austin Johnson</td><td>Michael Lee</td>
+              <td>0-30</td><td>Morning</td><td>5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    
+    <section class="card grid">
+      <div>
+        <h2>🧹 Missing Value Check</h2>
+        <p class="small">Total missing values after cleaning: <span class="success">0</span></p>
+      </div>
+
+      <div>
+        <h2>🔠 Encoding Summary</h2>
+        <p class="small">Encoded <strong>17</strong> categorical columns using LabelEncoder.</p>
+      </div>
+
+      <div class="full">
+        <h2>🗂️ Encoded Columns</h2>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Index</th><th>Categorical Column</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>Unique id</td></tr>
+              <tr><td>1</td><td>channel_name</td></tr>
+              <tr><td>2</td><td>category</td></tr>
+              <tr><td>3</td><td>Sub-category</td></tr>
+              <tr><td>4</td><td>Customer Remarks</td></tr>
+              <tr><td>5</td><td>Order_id</td></tr>
+              <tr><td>6</td><td>order_date_time</td></tr>
+              <tr><td>7</td><td>Issue_reported at</td></tr>
+              <tr><td>8</td><td>issue_responded</td></tr>
+              <tr><td>9</td><td>Survey_response_Date</td></tr>
+              <tr><td>10</td><td>Customer_City</td></tr>
+              <tr><td>11</td><td>Product_category</td></tr>
+              <tr><td>12</td><td>Agent_name</td></tr>
+              <tr><td>13</td><td>Supervisor</td></tr>
+              <tr><td>14</td><td>Manager</td></tr>
+              <tr><td>15</td><td>Tenure Bucket</td></tr>
+              <tr><td>16</td><td>Agent Shift</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card full">
+     
+      <h2>📊 Correlation Matrix (20 Columns × 10 Rows)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Unique id</th>
+              <th>channel_name</th>
+              <th>category</th>
+              <th>Sub-category</th>
+              <th>Customer Remarks</th>
+              <th>Order_id</th>
+              <th>order_date_time</th>
+              <th>Issue_reported at</th>
+              <th>issue_responded</th>
+              <th>Survey_response_Date</th>
+              <th>Customer_City</th>
+              <th>Product_category</th>
+              <th>Item_price</th>
+              <th>connected_handling_time</th>
+              <th>Agent_name</th>
+              <th>Supervisor</th>
+              <th>Manager</th>
+              <th>Tenure Bucket</th>
+              <th>Agent Shift</th>
+              <th>CSAT Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Unique id</th><td class="val1">1.00</td><td class="zero">0.00</td><td class="neg">-0.01</td><td class="zero">0.00</td><td class="neg">-0.01</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="zero">0.00</td><td class="zero">0.00</td><td class="zero">0.00</td><td class="zero">0.00</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="zero">0.00</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="neg">-0.01</td><td class="zero">0.00</td></tr>
+            <tr><th>channel_name</th><td class="zero">0.00</td><td class="val1">1.00</td><td class="pos">0.02</td><td class="pos">0.03</td><td class="zero">0.00</td><td class="neg">-0.01</td><td class="neg">-0.02</td><td class="pos">0.06</td><td class="pos">0.06</td><td class="pos">0.06</td><td class="neg">-0.02</td><td class="neg">-0.06</td><td class="neg">-0.04</td><td class="pos">0.02</td><td class="zero">0.00</td><td class="neg">-0.01</td><td class="pos">0.03</td><td class="pos">0.03</td><td class="neg">-0.03</td><td class="pos">0.03</td></tr>
+            <tr><th>category</th><td class="neg">-0.01</td><td class="pos">0.02</td><td class="val1">1.00</td><td class="pos">0.39</td><td class="negzero">-0.00</td><td class="neg">-0.02</td><td class="neg">-0.04</td><td class="neg">-0.01</td><td class="neg">-0.01</td><td class="neg">-0.01</td><td class="neg">-0.04</td><td class="neg">-0.07</td><td class="neg">-0.09</td><td class="negzero">-0.00</td><td class="neg">-0.01</td><td class="pos">0.04</td><td class="neg">-0.02</td><td class="neg">-0.01</td><td class="pos">0.01</td><td class="pos">0.08</td></tr>
+            <tr><th>Sub-category</th><td class="zero">0.00</td><td class="pos">0.03</td><td class="pos">0.39</td><td class="val1">1.00</td><td class="pos">0.01</td><td class="neg">-0.02</td><td class="neg">-0.02</td><td class="pos">0.01</td><td class="pos">0.02</td><td class="pos">0.01</td><td class="neg">-0.03</td><td class="neg">-0.04</td><td class="neg">-0.07</td><td class="pos">0.01</td><td class="zero">0.00</td><td class="pos">0.02</td><td class="negzero">-0.00</td><td class="neg">-0.01</td><td class="negzero">-0.00</td><td class="pos">0.02</td></tr>
+            <tr><th>Customer Remarks</th><td class="neg">-0.01</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="pos">0.01</td><td class="val1">1.00</td><td class="pos">0.01</td><td class="pos">0.01</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="pos">0.01</td><td class="pos">0.01</td><td class="negzero">-0.00</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="zero">0.00</td><td class="negzero">-0.00</td><td class="pos">0.01</td><td class="neg">-0.09</td></tr>
+            <tr><th>Order_id</th><td class="zero">0.00</td><td class="neg">-0.01</td><td class="neg">-0.02</td><td class="neg">-0.02</td><td class="pos">0.01</td><td class="val1">1.00</td><td class="pos">0.04</td><td class="pos">0.11</td><td class="pos">0.11</td><td class="pos">0.11</td><td class="pos">0.05</td><td class="pos">0.10</td><td class="pos">0.05</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="pos">0.01</td><td class="pos">0.03</td><td class="neg">-0.01</td><td class="neg">-0.01</td></tr>
+            <tr><th>order_date_time</th><td class="negzero">-0.00</td><td class="neg">-0.02</td><td class="neg">-0.04</td><td class="neg">-0.02</td><td class="pos">0.01</td><td class="pos">0.04</td><td class="val1">1.00</td><td class="pos">0.01</td><td class="neg">-0.01</td><td class="neg">-0.01</td><td class="val1">0.08</td><td class="val1">0.20</td><td class="val1">0.08</td><td class="negzero">-0.00</td><td class="val1">0.00</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="neg">-0.01</td><td class="zero">0.00</td><td class="neg">-0.04</td></tr>
+            <tr><th>Issue_reported at</th><td class="zero">0.00</td><td class="pos">0.06</td><td class="neg">-0.01</td><td class="pos">0.01</td><td class="negzero">-0.00</td><td class="pos">0.11</td><td class="pos">0.01</td><td class="val1">1.00</td><td class="val1">0.98</td><td class="val1">0.98</td><td class="neg">-0.02</td><td class="neg">-0.03</td><td class="neg">-0.04</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="neg">-0.04</td><td class="val1">0.10</td><td class="val1">0.18</td><td class="neg">-0.01</td><td class="pos">0.03</td></tr>
+            <tr><th>issue_responded</th><td class="zero">0.00</td><td class="pos">0.06</td><td class="neg">-0.01</td><td class="pos">0.02</td><td class="negzero">-0.00</td><td class="pos">0.11</td><td class="neg">-0.01</td><td class="val1">0.98</td><td class="val1">1.00</td><td class="val1">1.00</td><td class="neg">-0.02</td><td class="neg">-0.04</td><td class="neg">-0.04</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="neg">-0.04</td><td class="val1">0.10</td><td class="val1">0.18</td><td class="negzero">-0.00</td><td class="pos">0.03</td></tr>
+            <tr><th>Survey_response_Date</th><td class="zero">0.00</td><td class="pos">0.06</td><td class="neg">-0.01</td><td class="pos">0.01</td><td class="negzero">-0.00</td><td class="pos">0.11</td><td class="neg">-0.01</td><td class="val1">0.98</td><td class="val1">1.00</td><td class="val1">1.00</td><td class="neg">-0.02</td><td class="neg">-0.04</td><td class="neg">-0.04</td><td class="negzero">-0.00</td><td class="negzero">-0.00</td><td class="neg">-0.04</td><td class="val1">0.10</td><td class="val1">0.18</td><td class="zero">0.00</td><td class="pos">0.03</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <span><div class="color-box darkblue"></div> = 1.00 (Perfect Correlation)</span>
+        <span><div class="color-box aqua"></div> = Positive &lt; 1.00</span>
+        <span><div class="color-box coral"></div> = Negative</span>
+        <span><div class="color-box gray"></div> = 0.00</span>
+        <span><div class="color-box yellow"></div> = -0.00</span>
+      </div>
+    </section>
+
+
+    <section class="card">
+    <div style="text-align:center; margin-bottom:18px;">
+        <img src="graph/cor1.png" 
+             alt="Correlation Analysis Visualization" 
+             style="width:100%; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+    </div>
+</section>
+
+
+    <section class="card">
+      <h2>🏆 Top 3 Features Most Related to Target</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Feature</th><th>Correlation Value</th></tr></thead>
+          <tbody>
+            <tr><td>category</td><td>0.077</td></tr>
+            <tr><td>Issue_reported at</td><td>0.033</td></tr>
+            <tr><td>Survey_response_Date</td><td>0.032</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">These features are the strongest (positive) Pearson correlations with the <strong>CSAT Score</strong> target in this dataset. Use these as priority predictors when building models.</p>
+    </section>
+
+
+    <section class="card">
+    <div style="text-align:center; margin-bottom:18px;">
+        <img src="graph/cor2.png" 
+             alt="Correlation Analysis Visualization" 
+             style="width:100%; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+    </div>
+</section>
+
+
+    <section class="card full">
+      <h2>📘 Manual Step-by-Step Correlation Calculation (Sample Rows)</h2>
+      <p class="small">Feature explained: <strong>category</strong> vs Target: <strong>CSAT Score</strong></p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>category</th><th>CSAT Score</th><th>(X - X̄)</th><th>(Y - Ȳ)</th><th>(X - X̄)*(Y - Ȳ)</th><th>(X - X̄)²</th><th>(Y - Ȳ)²</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>8</td><td>5</td><td>0.042255</td><td>0.757843</td><td>0.032023</td><td>0.001785</td><td>0.574326</td></tr>
+            <tr><td>8</td><td>5</td><td>0.042255</td><td>0.757843</td><td>0.032023</td><td>0.001785</td><td>0.574326</td></tr>
+            <tr><td>5</td><td>5</td><td>-2.957745</td><td>0.757843</td><td>-2.241506</td><td>8.748256</td><td>0.574326</td></tr>
+            <tr><td>10</td><td>5</td><td>2.042255</td><td>0.757843</td><td>1.547708</td><td>4.170805</td><td>0.574326</td></tr>
+            <tr><td>1</td><td>5</td><td>-6.957745</td><td>0.757843</td><td>-5.272877</td><td>48.410216</td><td>0.574326</td></tr>
+            <tr><td>10</td><td>5</td><td>2.042255</td><td>0.757843</td><td>1.547708</td><td>4.170805</td><td>0.574326</td></tr>
+            <tr><td>8</td><td>5</td><td>0.042255</td><td>0.757843</td><td>0.032023</td><td>0.001785</td><td>0.574326</td></tr>
+            <tr><td>10</td><td>5</td><td>2.042255</td><td>0.757843</td><td>1.547708</td><td>4.170805</td><td>0.574326</td></tr>
+            <tr><td>10</td><td>5</td><td>2.042255</td><td>0.757843</td><td>1.547708</td><td>4.170805</td><td>0.574326</td></tr>
+            <tr><td>11</td><td>5</td><td>3.042255</td><td>0.757843</td><td>2.305551</td><td>9.255315</td><td>0.574326</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:12px" class="pre">
+Σ((X−X̄)(Y−Ȳ)) = 24,743.0307  
+Σ(X−X̄)² = 626,958.6144  
+Σ(Y−Ȳ)² = 163,339.4034  
+Denominator = 320,011.0093  
+Calculated Correlation (Manual): 0.0773  
+Correlation from Pandas: 0.0773
+      </div>
+
+      <p class="small">The manual computation confirms the Pearson correlation reported by pandas. This validates the calculation and helps build statistical intuition.</p>
+    </section>
+
+    <div class="card ">
+  <h2> Project Progress Milestone</h2>
+  <p><b>This Week’s Milestone (as per course outline):</b><br>
+  “Identify key predictive variables.”</p>
+
+  <h3> What You Have Achieved</h3>
+  <ul>
+    <li>✅ Cleaned and encoded the dataset (from earlier weeks)</li>
+    <li>✅ Calculated and visualized correlations across features</li>
+    <li>✅ Found the Top 3 predictive features most related to the target</li>
+    <li>✅ Validated correlation both statistically and mathematically</li>
+    <li>✅ Ready to move toward regression or classification modeling in Week 5</li>
+  </ul>
+
+  <p class="highlight"><b>🏆 Final Week 4 Project Milestone:</b><br>
+  Key predictive features identified for the modeling phase.<br>
+  <i>(You now know which independent variables strongly influence your target variable.)</i></p>
+</div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
