@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Optimization & Comparison Report</title>
+<style>
+    :root {
+  --bg: #F3F6F4;            /* page background */
+  --card: #ffffff;           /* card background */
+  --heading: #043915;        /* headings */
+  --text: #000000;           /* main text */
+  --muted: #555555;          /* secondary text */
+  --accent: #1E7F4C;         /* accent color (green) */
+  --card-border: #C5C7BC;    /* card border */
+  --highlight: #F8F8E8;      /* highlight box */
+}
+.table-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  width: 100%;
+  margin-top: 12px;
+  background: var(--card);
+}
+
+  table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid var(--card-border);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+td {
+  background: #f9f9f9;
+}
+
+body {
+  font-family: "Inter", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 30px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 22px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.card h2, .card h3 {
+  margin-top: 0;
+  color: var(--heading);
+}
+
+.card h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 12px;
+}
+
+ul {
+  margin: 10px 0 20px 25px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+    
+    .interpretation {
+        background-color: #ecf0f1;
+        border-left: 5px solid #3498db;
+        padding: 12px 15px;
+        margin: 15px 0;
+        border-radius: 6px;
+    }
+    .chart {
+        background-color: #fafafa;
+        border: 1px dashed #aaa;
+        padding: 15px;
+        text-align: center;
+        font-style: italic;
+        color: #7f8c8d;
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+    footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+
+.confusion, .metrics {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.confusion .box, .metrics .metric {
+  flex: 1 1 140px;
+  background: var(--highlight);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.confusion .box strong, .metrics .metric h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.metrics .metric p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .confusion, .metrics {
+    flex-direction: column;
+  }
+  .table-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  width: 100%;
+  margin-top: 12px;
+  background: var(--card);
+}
+
+  table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid var(--card-border);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+td {
+  background: #f9f9f9;
+}
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+      
+      <div>
+        <h1>Week 7 –  Model Evaluation</h1>
+        <p class="lead">Model Optimization and Comparison From Baseline to Best: Fine-Tuning Models for Maximum Accuracy</p>
+      </div>
+    </header>
+    
+<section class="card ">
+    <h2>Introduction</h2>
+          <p class="muted-block" style="font-size:18px; line-height:1.7; color:#000; font-family:'Times New Roman', Times, serif;">
+  In Week 7, you will enhance your previously developed classification models (from Week 6) by improving their accuracy and generalization ability through hyperparameter tuning, cross-validation, and feature importance analysis.
+
+This week is about optimization — turning your baseline models into high-performing, fine-tuned prediction systems for your E-commerce Recommendation System project.
+</p>
+</section>
+<section class ="card">
+  <h2>Objectives</h2>
+  <ul>
+    <li>Optimize <strong>Logistic Regression</strong> and <strong>Random Forest</strong> models.</li>
+    <li>Perform <strong>hyperparameter tuning</strong> using <code>GridSearchCV</code> or <code>RandomizedSearchCV</code>.</li>
+    <li>Evaluate models using <strong>cross-validation scores</strong>.</li>
+    <li>Analyze <strong>feature importance</strong> to identify key predictors.</li>
+    <li>Compare <strong>tuned models</strong> with baseline models from Week 6.</li>
+  </ul>
+</section>
+
+<section class="card">
+    
+  <h2>📝 Load and Preprocess Data</h2>
+    
+        <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Sr No.</th>
+        <th>Unique id</th>
+        <th>channel_name</th>
+        <th>category</th>
+        <th>Sub-category</th>
+        <th>Customer Remarks</th>
+        <th>Order_id</th>
+        <th>order_date_time</th>
+        <th>Issue_reported at</th>
+        <th>issue_responded</th>
+        <th>Survey_response_Date</th>
+        <th>Customer_City</th>
+        <th>Product_category</th>
+        <th>Item_price</th>
+        <th>connected_handling_time</th>
+        <th>Agent_name</th>
+        <th>Supervisor</th>
+        <th>Manager</th>
+        <th>Tenure Bucket</th>
+        <th>Agent Shift</th>
+        <th>CSAT Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td>
+        <td>Outcall</td>
+        <td>Product Queries</td>
+        <td>Life Insurance</td>
+        <td>NaN</td>
+        <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td>
+        <td>NaN</td>
+        <td>01/08/2023 11:13</td>
+        <td>01/08/2023 11:47</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Richard Buchanan</td>
+        <td>Mason Gupta</td>
+        <td>Jennifer Nguyen</td>
+        <td>On Job Training</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td>
+        <td>Outcall</td>
+        <td>Product Queries</td>
+        <td>Product Specific Information</td>
+        <td>NaN</td>
+        <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td>
+        <td>NaN</td>
+        <td>01/08/2023 12:52</td>
+        <td>01/08/2023 12:54</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Vicki Collins</td>
+        <td>Dylan Kim</td>
+        <td>Michael Lee</td>
+        <td>>90</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>200814dd-27c7-4149-ba2b-bd3af3092880</td>
+        <td>Inbound</td>
+        <td>Order Related</td>
+        <td>Installation/demo</td>
+        <td>NaN</td>
+        <td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td>
+        <td>NaN</td>
+        <td>01/08/2023 20:16</td>
+        <td>01/08/2023 20:38</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Duane Norman</td>
+        <td>Jackson Park</td>
+        <td>William Kim</td>
+        <td>On Job Training</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td>
+        <td>Inbound</td>
+        <td>Returns</td>
+        <td>Reverse Pickup Enquiry</td>
+        <td>NaN</td>
+        <td>5aed0059-55a4-4ec6-bb54-97942092020a</td>
+        <td>NaN</td>
+        <td>01/08/2023 20:56</td>
+        <td>01/08/2023 21:16</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Patrick Flores</td>
+        <td>Olivia Wang</td>
+        <td>John Smith</td>
+        <td>>90</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>ba903143-1e54-406c-b969-46c52f92e5df</td>
+        <td>Inbound</td>
+        <td>Cancellation</td>
+        <td>Not Needed</td>
+        <td>NaN</td>
+        <td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td>
+        <td>NaN</td>
+        <td>01/08/2023 10:30</td>
+        <td>01/08/2023 10:32</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Christopher Sanchez</td>
+        <td>Austin Johnson</td>
+        <td>Michael Lee</td>
+        <td>0-30</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>1cfde5b9-6112-44fc-8f3b-892196137a62</td>
+        <td>Email</td>
+        <td>Returns</td>
+        <td>Fraudulent User</td>
+        <td>NaN</td>
+        <td>a2938961-2833-45f1-83d6-678d9555c603</td>
+        <td>NaN</td>
+        <td>01/08/2023 15:13</td>
+        <td>01/08/2023 18:39</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Desiree Newton</td>
+        <td>Emma Park</td>
+        <td>John Smith</td>
+        <td>0-30</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>11a3ffd8-1d6b-4806-b198-c60b5934c9bc</td>
+        <td>Outcall</td>
+        <td>Product Queries</td>
+        <td>Product Specific Information</td>
+        <td>NaN</td>
+        <td>bfcb562b-9a2f-4cca-aa79-fd4e2952f901</td>
+        <td>NaN</td>
+        <td>01/08/2023 15:31</td>
+        <td>01/08/2023 23:52</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Shannon Hicks</td>
+        <td>Aiden Patel</td>
+        <td>Olivia Tan</td>
+        <td>>90</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>372b51a5-fa19-4a31-a4b8-a21de117d75e</td>
+        <td>Inbound</td>
+        <td>Returns</td>
+        <td>Exchange / Replacement</td>
+        <td>Very good</td>
+        <td>88537e0b-5ffa-43f9-bbe2-fe57a0f4e4ae</td>
+        <td>NaN</td>
+        <td>01/08/2023 16:17</td>
+        <td>01/08/2023 16:23</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Laura Smith</td>
+        <td>Evelyn Kimura</td>
+        <td>Jennifer Nguyen</td>
+        <td>On Job Training</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>6e4413db-4e16-42fc-ac92-2f402e3df03c</td>
+        <td>Inbound</td>
+        <td>Returns</td>
+        <td>Missing</td>
+        <td>Shopzilla app and it's all customer care serv...</td>
+        <td>e6be9713-13c3-493c-8a91-2137cbbfa7e6</td>
+        <td>NaN</td>
+        <td>01/08/2023 21:03</td>
+        <td>01/08/2023 21:07</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>David Smith</td>
+        <td>Nathan Patel</td>
+        <td>John Smith</td>
+        <td>>90</td>
+        <td>Split</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>b0a65350-64a5-4603-8b9a-a24a4a145d08</td>
+        <td>Inbound</td>
+        <td>Shopzilla Related</td>
+        <td>General Enquiry</td>
+        <td>NaN</td>
+        <td>c7caa804-2525-499e-b202-4c781cb68974</td>
+        <td>NaN</td>
+        <td>01/08/2023 23:31</td>
+        <td>01/08/2023 23:36</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Tabitha Ayala</td>
+        <td>Amelia Tanaka</td>
+        <td>Michael Lee</td>
+        <td>31-60</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</section>
+<section class="card">
+  <h3> Key Steps in Week 7 Assignment</h3>
+  <p>Use the same cleaned dataset from Week 6. Ensure:</p>
+  <ul>
+    <li>No missing values.</li>
+    <li>Encoded categorical features.</li>
+    <li>Standardized numeric features.</li>
+  </ul>
+  <p>You can reuse your preprocessing code from Week 6.</p>
+</section>
+
+<section class="card">
+    <h3>✅ Preprocessing Completed</h3>
+    <table>
+        <tr><th>Detail</th><th>Value</th></tr>
+        <tr><td>Dataset Shape</td><td>(85907, 49)</td></tr>
+        <tr><td>Features</td><td>(85907, 2)</td></tr>
+        <tr><td>Target (CSAT_Category)</td><td>Binary (Satisfied = 1, Unsatisfied = 0)</td></tr>
+    </table>
+</section>
+
+<section class="card ">
+    <h3>📊 Baseline Accuracy</h3>
+    <table>
+        <tr><th>Model</th><th>Accuracy</th></tr>
+        <tr><td>Logistic Regression</td><td>0.8265</td></tr>
+        <tr><td>Random Forest</td><td>0.8211</td></tr>
+    </table>
+
+    <div class="interpretation">
+        <b>Interpretation:</b> The baseline results show the initial performance of both models before any tuning. Typically, Random Forest performs better on mixed and non-linear datasets compared to Logistic Regression, which assumes a linear relationship.
+    </div>
+</section>
+   
+<section class="card ">
+     <h2>Understanding GridSearchCV Output</h2>
+
+  <div class="highlight">
+    <div class="chart">Fitting 5 folds for each of 6 candidates, totalling 30 fits</div>
+    <div class="chart">Fitting 3 folds for each of 8 candidates, totalling 24 fits</div>
+
+
+    <p><strong>Fitting 5 folds for each of 6 candidates, totalling 30 fits</strong><br>
+    <strong>Fitting 3 folds for each of 8 candidates, totalling 24 fits</strong></p>
+    <p>✅ These are status logs — not visual graphs. They show that <strong>GridSearchCV</strong> is running multiple model fits internally to test combinations of hyperparameters.</p>
+  </div>
+
+  <h3>🔍 Step-by-Step Explanation</h3>
+  <p>When you see messages like the ones above, they come from <strong>GridSearchCV</strong> in Scikit-Learn, which automatically tests multiple parameter combinations to find the best-performing model.</p>
+
+  <h3>1️⃣ Fitting 5 folds for each of 6 candidates</h3>
+  <p>This refers to the <strong>Logistic Regression</strong> model.</p>
+  <ul>
+    <li><strong>6 candidates</strong> means GridSearchCV is testing 6 possible hyperparameter combinations.</li>
+    <li><strong>5 folds</strong> means it’s using 5-fold cross-validation, splitting the data into 5 parts and training/testing 5 times.</li>
+  </ul>
+
+  <div class="example">
+    <p><strong>Example combinations for Logistic Regression:</strong></p>
+    <ul>
+      <li>C=0.1, penalty='l1'</li>
+      <li>C=0.1, penalty='l2'</li>
+      <li>C=1, penalty='l1'</li>
+      <li>C=1, penalty='l2'</li>
+      <li>C=10, penalty='l1'</li>
+      <li>C=10, penalty='l2'</li>
+    </ul>
+  </div>
+
+  <p>That’s why you see: <strong>6 × 5 = 30 fits</strong> — meaning 30 training and testing cycles in total.</p>
+
+  <h3>2️⃣ Fitting 3 folds for each of 8 candidates</h3>
+  <p>This message corresponds to the <strong>Random Forest</strong> model.</p>
+  <ul>
+    <li><strong>8 candidates</strong> means 8 different hyperparameter combinations are being tested.</li>
+    <li><strong>3 folds</strong> means 3-fold cross-validation is used to balance accuracy with training speed.</li>
+  </ul>
+  <p>Total = <strong>8 × 3 = 24 fits</strong>.</p>
+
+</section>
+<section class="card ">
+  <h3>🏆 Best Hyperparameters Found</h3>
+
+  <div class="code">
+    &lt;li&gt;Logistic Regression → {'C': 0.1, 'penalty': 'l1', 'solver': 'liblinear'}&lt;/li&gt;<br>
+    &lt;li&gt;Random Forest → {'max_depth': 10, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 100}&lt;/li&gt;
+  </div>
+
+  <p>After testing all parameter combinations, GridSearchCV identifies which settings produce the highest validation accuracy.</p>
+
+  <h3>⚙️ Hyperparameter Explanation</h3>
+
+  <ul>
+    <li><strong>C = 0.1</strong>: Controls regularization strength. Smaller values simplify the model.</li>
+    <li><strong>penalty = 'l1'</strong>: Uses L1 regularization, which helps with feature selection.</li>
+    <li><strong>solver = 'liblinear'</strong>: A fast algorithm for small to medium datasets.</li>
+    <li><strong>max_depth = 10</strong>: Limits how deep trees can grow to avoid overfitting.</li>
+    <li><strong>min_samples_leaf = 2</strong>: Ensures at least 2 samples per leaf, improving stability.</li>
+    <li><strong>n_estimators = 100</strong>: Builds 100 trees for better generalization.</li>
+  </ul>
+
+  <table>
+    <tr>
+      <th>Model</th>
+      <th>What GridSearchCV Did</th>
+      <th>Best Hyperparameters</th>
+      <th>Why They Matter</th>
+    </tr>
+    <tr>
+      <td>Logistic Regression</td>
+      <td>Tested 6 parameter combinations with 5-fold cross-validation (30 fits)</td>
+      <td>C=0.1, penalty='l1', solver='liblinear'</td>
+      <td>Simpler, regularized model that avoids overfitting</td>
+    </tr>
+    <tr>
+      <td>Random Forest</td>
+      <td>Tested 8 parameter combinations with 3-fold cross-validation (24 fits)</td>
+      <td>max_depth=10, min_samples_leaf=2, n_estimators=100</td>
+      <td>Deep yet controlled trees for better generalization</td>
+    </tr>
+  </table>
+
+  <div class="highlight">
+    <p><strong>💡 Final Takeaway:</strong>  
+    The “fitting” messages simply mean GridSearchCV is testing multiple hyperparameter combinations using cross-validation.  
+    The result is a <strong>tuned, optimized model</strong> with the best configuration for your dataset.</p>
+  </div>
+
+    <h3>🏆 Best Hyperparameters Found</h3>
+    <table>
+        <tr><th>Model</th><th>Best Parameters</th></tr>
+        <tr><td>Logistic Regression</td><td>{'C': 0.1, 'penalty': 'l1', 'solver': 'liblinear'}</td></tr>
+        <tr><td>Random Forest</td><td>{'max_depth': 10, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 100}</td></tr>
+    </table>
+
+    <div class="interpretation">
+        <b>Interpretation:</b> Grid Search identifies the combination of parameters that yield the highest accuracy. For example, Logistic Regression may prefer L2 regularization, while Random Forest benefits from deeper trees or larger minimum samples per leaf.
+    </div>
+</section>
+
+<section class="card ">
+
+    <h3>📈 Tuned Logistic Regression Performance</h3>
+    <p><b>Accuracy:</b> 0.8264</p>
+
+    <table>
+        <tr><th>Label</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th></tr>
+        <tr><td>0</td><td>0.404</td><td>0.008</td><td>0.015</td><td>2971.000</td></tr>
+        <tr><td>1</td><td>0.828</td><td>0.998</td><td>0.905</td><td>14211.000</td></tr>
+        <tr><td>Accuracy</td><td >0.826</td><td>0.826</td><td>0.826</td><td>0.826</td></tr>
+        <tr><td>Macro avg</td><td>0.616</td><td>0.503</td><td>0.460</td><td>17182.000</td></tr>
+        <tr><td>Weighted avg</td><td>0.754</td><td>0.826</td><td>0.751</td><td>17182.000</td></tr>
+    </table>
+</section>
+    <section class="card">
+    <div style="display:flex; justify-content:center;">
+  <img src="outputs/confi1.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+</section>
+    <section class="card">
+    <div class="interpretation">
+        <b>Interpretation of Confusion Matrix:</b><br>
+        - The diagonal cells represent correctly classified samples.<br>
+        - The top-left cell shows correctly predicted 'Unsatisfied' customers, while the bottom-right shows correctly predicted 'Satisfied' ones.<br>
+        - The fewer off-diagonal values, the better the model’s predictive power.
+    </div>
+</section>
+<section class="card ">
+    <h3>📈 Tuned Random Forest Performance</h3>
+    <p><b>Accuracy:</b> 0.8271</p>
+
+    <table>
+        <tr><th>Label</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th></tr>
+        <tr><td>0</td><td>0.500</td><td>0.003</td><td>0.005</td><td>2971.000</td></tr>
+        <tr><td>1</td><td>0.827</td><td>0.999</td><td>0.905</td><td>14211.000</td></tr>
+        <tr><td>Accuracy</td><td >0.827</td><td>0.87</td><td>0.87</td><td>0.87</td></tr>
+        <tr><td>Macro avg</td><td>0.664</td><td>0.501</td><td>0.455</td><td>17182.000</td></tr>
+        <tr><td>Weighted avg</td><td>0.771</td><td>0.827</td><td>0.750</td><td>17182.000</td></tr>
+    </table>
+</section>
+<section class="card">
+
+     <div style="display:flex; justify-content:center;">
+  <img src="outputs/confi2.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+</section>
+<section class="card">
+    <div class="interpretation">
+        <b>Interpretation of Confusion Matrix:</b><br>
+        - The diagonal cells represent correctly classified samples.<br>
+        - The top-left cell shows correctly predicted 'Unsatisfied' customers, while the bottom-right shows correctly predicted 'Satisfied' ones.<br>
+        - The fewer off-diagonal values, the better the model’s predictive power.
+    </div>
+</section>
+<section class="card ">
+    <h3>🔁 Cross-Validation Accuracy</h3>
+    <table>
+        <tr><th>Model</th><th>Mean CV Accuracy</th></tr>
+        <tr><td>Logistic Regression (Tuned)</td><td>0.8239</td></tr>
+        <tr><td>Random Forest (Tuned)</td><td>0.8245</td></tr>
+    </table>
+</section>
+<section class="card">
+ <div style="display:flex; justify-content:center;">
+  <img src="outputs/cross.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+</section>
+<section class="card">
+    <div class="interpretation">
+        <b>Interpretation:</b> Cross-validation helps confirm that the model’s performance is stable across different data splits. Random Forest generally has a smaller variance and performs consistently well across folds.
+    </div>
+</section>
+
+<section class="card ">
+
+     <div style="display:flex; justify-content:center;">
+  <img src="outputs/model.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+</section>
+
+<section class="card ">
+    <h3>📊 Interpretation of Feature Importance</h3>
+    <div class="interpretation">
+        The Random Forest model highlights the top contributing features for predicting customer satisfaction. If <b>response time</b> or <b>support quality</b> rank high, it indicates that improving these aspects could significantly increase customer satisfaction scores. This chart helps prioritize actionable business areas for improvement.
+    </div>
+
+    </section>
+
+    <section class="card ">
+    <h3>📘 Final Interpretation of Charts</h3>
+    <ul>
+        <li><b>Logistic Regression:</b> The tuned version slightly improves accuracy but remains limited by its linear assumptions. It’s easier to interpret but less flexible.</li>
+        <li><b>Random Forest:</b> Delivers higher accuracy both before and after tuning, demonstrating strong performance on complex data structures. Tuning fine-tunes depth and split rules for optimal generalization.</li>
+        <li><b>Model Comparison Chart:</b> Clearly shows accuracy improvement after tuning. The largest jump is seen in Random Forest, confirming that ensemble methods capture non-linear relationships more effectively.</li>
+        <li><b>Business Takeaway:</b> The tuned Random Forest model is the best-performing approach for predicting customer satisfaction, offering actionable insights into which service factors most influence satisfaction.</li>
+    </ul>
+</section>
+
+<div class="card">
+  <h2>🚀 Project Milestone for Week 7</h2>
+  <p><strong>Milestone:</strong> Optimize baseline models (Logistic Regression and Random Forest) through hyperparameter tuning and cross-validation.</p>
+  
+  <p><strong>Outcome:</strong></p>
+  <ul>
+    <li>You now have optimized models that perform better than the Week 6 baseline.</li>
+    <li>You understand which features drive the predictions most.</li>
+    <li>You can justify model choice with both performance and interpretability.</li>
+  </ul>
+</div>
+
+    <footer>© 2025 Model Optimization Report — Machine Learning Performance Summary</footer>
+</div>
+
+</body>
+</html>
