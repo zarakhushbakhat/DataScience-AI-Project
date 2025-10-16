@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Week 6 – Supervised Learning (Classification Models)</title>
+  <style>
+  :root {
+    --bg: #BFD4BF;          /* very light warm background */
+    --card: #ffffff;        /* pure white card */
+    --muted: #181616;       /* neutral gray for secondary text */
+    --accent: #043915;      /* deep green accent */
+    --heading: #000000;     /* black for headings */
+    --text: #000000;        /* black for normal text */
+    --card-border: #C5C7BC; /* soft light border */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 28px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), #B6AE9F);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 8px 30px rgba(4, 57, 21, 0.25);
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0;
+    color: var(--heading);
+  }
+
+  p.lead {
+    color: var(--muted);
+    margin: 6px 0 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 18px;
+  }
+
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .card h2 {
+    margin-top: 0;
+    color: var(--heading);
+    font-size: 20px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #C5C7BC;
+    color: var(--heading);
+    font-weight: 600;
+    font-size: 13px;
+    margin-right: 8px;
+  }
+
+  .section { margin-bottom: 18px; }
+
+  .muted { color: var(--muted); }
+
+  /* Table Styling */
+  .table-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #C5C7BC;
+    max-height: 455px;
+    width: 100%;
+    max-width: 900px;
+    display: block;
+    background: #FFFFFF;
+  }
+
+  table {
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 10px;
+    color: var(--text);
+  }
+
+  th, td {
+    padding: 10px 12px;
+    border: 1px solid #C5C7BC;
+    text-align: left;
+  }
+
+  th {
+    background: var(--accent);
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+
+  td {
+    background: #f9f9f9;
+  }
+
+  .interpretation-box {
+  background: #F8F8E8;             /* light gray box fill */
+  color: #000;                     /* black text */
+  border: 1px solid #ccc;          /* subtle border */
+  border-left: 4px solid #043915;  /* green accent bar */
+  border-radius: 8px;
+  padding: 18px 20px;
+  font-size: 16px;
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.7;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+
+.interpretation-box ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.interpretation-box li {
+  margin-bottom: 6px;
+}
+  
+.metric-box {
+  background: #F8F8E8;             /* soft gray background */
+  color: #000;                     /* black readable text */
+  border: 1px solid #ccc;          /* subtle border */
+  border-left: 4px solid #043915;  /* green accent */
+  border-radius: 8px;
+  padding: 18px 20px;
+  font-size: 16px;
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.7;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-box ul {
+  margin: 6px 0 12px 18px;
+  padding: 0;
+}
+
+.metric-box li {
+  margin-bottom: 6px;
+}
+
+  
+
+    .metrics{display:flex;gap:12px;flex-wrap:wrap}
+    .metric{flex:1 1 140px;background:var(--glass-2);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+    .metric h3{margin:0;font-size:20px}
+    .metric p{margin:6px 0 0;color:var(--muted)}
+
+    .confusion{display:flex;gap:10px;align-items:center}
+    .confusion .box{width:120px;height:120px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .confusion strong{font-size:20px}
+    .chart{height:160px;border-radius:10px;background:linear-gradient(180deg, rgba(124,58,237,0.10), rgba(59,130,246,0.05));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* navigation on right */
+    .sidebar h3{margin:0 0 8px}
+    .small{font-size:13px}
+
+    /* responsive table-like listing */
+    .kv{display:grid;grid-template-columns:180px 1fr;gap:8px 18px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02)}
+    .kv .k{color:var(--muted);font-weight:700}
+
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#06b6d4);color:#fff;text-decoration:none;font-weight:700}
+
+    /* small helpers */
+    .muted-block{color:var(--muted);font-size:13px}
+  </style> 
+ 
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">W6</div>
+      <div>
+        <h1>Week 6 – Supervised Learning (Classification Models)</h1>
+        <p class="lead">Build and evaluate supervised learning models (Logistic Regression &amp; Random Forest) to classify customer satisfaction levels.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main>
+        <section class="card section">
+          
+
+          <h2>Introduction</h2>
+          <p class="muted-block" style="font-size:18px; line-height:1.7; color:#000; font-family:'Times New Roman', Times, serif;">
+  In Week 6, the focus shifts from regression (predicting continuous values) to classification (predicting categorical outcomes).
+You will build and evaluate supervised learning models that classify customer satisfaction levels (CSAT) into binary or multi-class categories.
+
+This week’s task continues from the previous regression milestone and introduces Logistic Regression and Random Forest Classifier to predict whether a customer is satisfied (CSAT ≥ 4) or not (CSAT < 4).
+</p>
+
+        </section>
+        <section class="card section">
+          <h2>Objective</h2>
+          <p> The goal of Week 6 is to:</p>
+          <ul>
+            <li>Transform the CSAT Score into categorical labels for classification.</li>
+            <li>Train Logistic Regression and Random Forest models to predict customer satisfaction categories.</li>
+            <li>Compare the models using evaluation metrics such as: Accuracy, Precision, Recall, F1-Score.</li>
+            <li>Visualize and interpret the model results using a confusion matrix and performance comparison chart.</li>
+          </ul>
+
+          </section>
+          <section class="card section">
+  
+    <h2>Key Steps in the Week 6 Task</h2>
+    <ol>
+      <li><strong>Data Preprocessing</strong>
+        <div class="muted small" style="margin-top:8px; font-size:16px; line-height:1.8;">
+          Remove irrelevant identifiers such as Customer_ID, Order_ID, Product_ID.
+          <br>Handle missing values:
+          <br>- Fill numeric columns with median values.
+          <br>- Encode categorical variables using One-Hot Encoding.
+          <br>Create a binary target variable CSAT_Category:
+          <br><code>df['CSAT_Category'] = df['CSAT Score'].apply(lambda x: 1 if x >= 4 else 0)</code>
+          <br><br>1 → Satisfied customer
+          <br>0 → Unsatisfied customer
+        </div>
+      </li>
+
+      <li><strong>Feature and Target Selection</strong>
+        <div class="muted small" style="margin-top:8px; font-size:16px; line-height:1.8;">
+          Features (X): All numeric and encoded variables except CSAT Score and CSAT_Category.
+          <br>Target (y): CSAT_Category.
+        </div>
+      </li>
+
+      <li><strong>Train/Test Split</strong>
+        <div class="muted small" style="margin-top:8px; font-size:16px; line-height:1.8;">
+          Split the dataset into:
+          <br>Training set: 80% of the data
+          <br>Testing set: 20% of the data
+          <br>Ensures unbiased model evaluation.
+        </div>
+      </li>
+
+      <li><strong>Feature Scaling</strong>
+        <div class="muted small" style="margin-top:8px; font-size:16px; line-height:1.8;">
+          Standardize numeric features using: <code>StandardScaler()</code>
+          <br>Scaling ensures balanced feature influence, especially for Logistic Regression.
+        </div>
+      </li>
+
+      <li><strong>Model Training</strong>
+        <div class="muted small" style="margin-top:8px; font-size:16px; line-height:1.8;">
+          <strong>Logistic Regression:</strong>
+          <br>A linear model used for binary classification. Outputs probabilities of belonging to each class.
+          <br>Formula:
+          <br><code>P(Y=1) = 1 / (1 + e^{-(β0 + β1 x1 + β2 x2 + ... + βn xn)})</code>
+
+          <br><br><strong>Random Forest Classifier:</strong>
+          <br>An ensemble of multiple decision trees. Captures complex, non-linear patterns. Reduces overfitting and improves predictive performance.
+        </div>
+      </li>
+    </ol>
+  
+</section>
+
+
+        <section class="card section">
+          <h2>Dataset Preview (First 10 Rows)</h2>
+          <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Unique id</th>
+        <th>channel_name</th>
+        <th>category</th>
+        <th>Sub-category</th>
+        <th>Customer Remarks</th>
+        <th>Order_id</th>
+        <th>order_date_time</th>
+        <th>Issue_reported at</th>
+        <th>issue_responded</th>
+        <th>Survey_response_Date</th>
+        <th>Customer_City</th>
+        <th>Product_category</th>
+        <th>Item_price</th>
+        <th>connected_handling_time</th>
+        <th>Agent_name</th>
+        <th>Supervisor</th>
+        <th>Manager</th>
+        <th>Tenure Bucket</th>
+        <th>Agent Shift</th>
+        <th>CSAT Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td>
+        <td>Outcall</td>
+        <td>Product Queries</td>
+        <td>Life Insurance</td>
+        <td>NaN</td>
+        <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td>
+        <td>NaN</td>
+        <td>01/08/2023 11:13</td>
+        <td>01/08/2023 11:47</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Richard Buchanan</td>
+        <td>Mason Gupta</td>
+        <td>Jennifer Nguyen</td>
+        <td>On Job Training</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td>
+        <td>Outcall</td>
+        <td>Product Queries</td>
+        <td>Product Specific Information</td>
+        <td>NaN</td>
+        <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td>
+        <td>NaN</td>
+        <td>01/08/2023 12:52</td>
+        <td>01/08/2023 12:54</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Vicki Collins</td>
+        <td>Dylan Kim</td>
+        <td>Michael Lee</td>
+        <td>&gt;90</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>200814dd-27c7-4149-ba2b-bd3af3092880</td>
+        <td>Inbound</td>
+        <td>Order Related</td>
+        <td>Installation/demo</td>
+        <td>NaN</td>
+        <td>c273368d-b961-44cb-beaf-62d6fd6c00d5</td>
+        <td>NaN</td>
+        <td>01/08/2023 20:16</td>
+        <td>01/08/2023 20:38</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Duane Norman</td>
+        <td>Jackson Park</td>
+        <td>William Kim</td>
+        <td>On Job Training</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>eb0d3e53-c1ca-42d3-8486-e42c8d622135</td>
+        <td>Inbound</td>
+        <td>Returns</td>
+        <td>Reverse Pickup Enquiry</td>
+        <td>NaN</td>
+        <td>5aed0059-55a4-4ec6-bb54-97942092020a</td>
+        <td>NaN</td>
+        <td>01/08/2023 20:56</td>
+        <td>01/08/2023 21:16</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Patrick Flores</td>
+        <td>Olivia Wang</td>
+        <td>John Smith</td>
+        <td>&gt;90</td>
+        <td>Evening</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>ba903143-1e54-406c-b969-46c52f92e5df</td>
+        <td>Inbound</td>
+        <td>Cancellation</td>
+        <td>Not Needed</td>
+        <td>NaN</td>
+        <td>e8bed5a9-6933-4aff-9dc6-ccefd7dcde59</td>
+        <td>NaN</td>
+        <td>01/08/2023 10:30</td>
+        <td>01/08/2023 10:32</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Christopher Sanchez</td>
+        <td>Austin Johnson</td>
+        <td>Michael Lee</td>
+        <td>0-30</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>1cfde5b9-6112-44fc-8f3b-892196137a62</td>
+        <td>Email</td>
+        <td>Returns</td>
+        <td>Fraudulent User</td>
+        <td>NaN</td>
+        <td>a2938961-2833-45f1-83d6-678d9555c603</td>
+        <td>NaN</td>
+        <td>01/08/2023 15:13</td>
+        <td>01/08/2023 18:39</td>
+        <td>01-Aug-23</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>NaN</td>
+        <td>Desiree Newton</td>
+        <td>Emma Park</td>
+        <td>John Smith</td>
+        <td>0-30</td>
+        <td>Morning</td>
+        <td>5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+          <h2>✅ Preprocessing Summary</h2>
+          <div class="kv"><div class="k">Shape after preprocessing:</div><div class="v">(85907, 49) → (Rows = Customer Records, Columns = Features + Target)</div></div>
+          <div class="kv"><div class="k">Features Shape:</div><div class="v">(85907, 2) → Predictor variables for classification</div></div>
+          <div class="kv"><div class="k">Target Shape:</div><div class="v">(85907,) → Binary target (CSAT Category)</div></div>
+          <div class="kv"><div class="k">✅ Train/Test Split Completed</div><div class="v">Training Samples: 68725 • Testing Samples: 17182</div></div>
+        </section>
+
+        <section class="card section">
+          <h2>📊 Logistic Regression Evaluation Results</h2>
+          <div class="metrics" style="margin-bottom:12px">
+            <div class="metric"><h3>Accuracy</h3><p>0.8265</p></div>
+            <div class="metric"><h3>Precision / Recall / F1</h3><p>See classification report below</p></div>
+          </div>
+
+          <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th> </th>
+        <th>precision</th>
+        <th>recall</th>
+        <th>f1-score</th>
+        <th>support</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0</td>
+        <td>0.41</td>
+        <td>0.01</td>
+        <td>0.02</td>
+        <td>2971.00</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>0.83</td>
+        <td>1.00</td>
+        <td>0.90</td>
+        <td>14211.00</td>
+      </tr>
+      <tr>
+        <td><strong>accuracy</strong></td>
+        <td>0.83</td>
+        <td>0.83</td>
+        <td>0.83</td>
+        <td>0.83</td>
+      </tr>
+      <tr>
+        <td><strong>macro avg</strong></td>
+        <td>0.62</td>
+        <td>0.50</td>
+        <td>0.46</td>
+        <td>17182.00</td>
+      </tr>
+      <tr>
+        <td><strong>weighted avg</strong></td>
+        <td>0.76</td>
+        <td>0.83</td>
+        <td>0.75</td>
+        <td>17182.00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+<section class="card section">
+<div style="display:flex; justify-content:center;">
+  <img src="output/conf.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+</section>
+
+<section class="card section">
+<div class="interpretation-box">
+  <h3>Confusion Matrix Interpretation:</h3>
+  <ul>
+    <li><strong>True Positives (TP):</strong> 14177 → Correctly predicted satisfied customers</li>
+    <li><strong>True Negatives (TN):</strong> 24 → Correctly predicted unsatisfied customers</li>
+    <li><strong>False Positives (FP):</strong> 2947 → Predicted satisfied but actually unsatisfied</li>
+    <li><strong>False Negatives (FN):</strong> 34 → Predicted unsatisfied but actually satisfied</li>
+  </ul>
+</div>
+
+
+
+         <div class="metric-box">
+  <h2>🧮 Manual Metric Calculations (Logistic Regression)</h2>
+  <p><strong>Formulas:</strong></p>
+  <ul>
+    <li>Accuracy = (TP + TN) / (TP + TN + FP + FN)</li>
+    <li>Precision = TP / (TP + FP)</li>
+    <li>Recall = TP / (TP + FN)</li>
+    <li>F1 Score = 2 × (Precision × Recall) / (Precision + Recall)</li>
+  </ul>
+
+  <p><strong>📈 Substituting values:</strong></p>
+  <ul>
+    <li>Accuracy = (14177 + 24) / (14177 + 24 + 2947 + 34) = <strong>0.8265</strong></li>
+    <li>Precision = 14177 / (14177 + 2947) = <strong>0.8279</strong></li>
+    <li>Recall = 14177 / (14177 + 34) = <strong>0.9976</strong></li>
+    <li>F1 Score = 2 × (0.8279 × 0.9976) / (0.8279 + 0.9976) = <strong>0.9049</strong></li>
+  </ul>
+</div>
+        </section>
+
+        <section class="card section">
+          <h2>📊 Random Forest Classifier Evaluation Results</h2>
+          <div class="metrics" style="margin-bottom:12px">
+            <div class="metric"><h3>Accuracy</h3><p>0.8211</p></div>
+            <div class="metric"><h3>Precision / Recall / F1</h3><p>See classification report below</p></div>
+          </div>
+
+          <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th> </th>
+        <th>precision</th>
+        <th>recall</th>
+        <th>f1-score</th>
+        <th>support</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0</td>
+        <td>0.30</td>
+        <td>0.03</td>
+        <td>0.05</td>
+        <td>2971.00</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>0.83</td>
+        <td>0.99</td>
+        <td>0.90</td>
+        <td>14211.00</td>
+      </tr>
+      <tr>
+        <td><strong>accuracy</strong></td>
+        <td>0.82</td>
+        <td>0.82</td>
+        <td>0.82</td>
+        <td>0.82</td>
+      </tr>
+      <tr>
+        <td><strong>macro avg</strong></td>
+        <td>0.56</td>
+        <td>0.51</td>
+        <td>0.47</td>
+        <td>17182.00</td>
+      </tr>
+      <tr>
+        <td><strong>weighted avg</strong></td>
+        <td>0.74</td>
+        <td>0.82</td>
+        <td>0.75</td>
+        <td>17182.00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+        </section>
+        <section class="card section">
+<div style="display:flex; justify-content:center;">
+  <img src="output/conf2.png" alt="Example"
+  style="width:700px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+        </section>
+
+        <section class="card section">
+          <div class="metric-box">
+  <h2> Confusion Matrix Interpretation</h2>
+  <ul>
+    <li><strong>True Positives (TP):</strong> 14032 → Correctly predicted satisfied customers</li>
+    <li><strong>True Negatives (TN):</strong> 76 → Correctly predicted unsatisfied customers</li>
+    <li><strong>False Positives (FP):</strong> 2895 → Predicted satisfied but actually unsatisfied</li>
+    <li><strong>False Negatives (FN):</strong> 179 → Predicted unsatisfied but actually satisfied</li>
+  </ul>
+</div>
+
+        </section>
+        <section class="card section">
+          <h2>📈 Interpretation of Chart</h2>
+          <p class="muted-block" style="font-size:18px; line-height:1.7; color:#000; font-family:'Times New Roman', Times, serif;">This bar chart compares the accuracy of both classification models:
+          <br>Logistic Regression provides a baseline linear model performance. Random Forest usually performs better because it captures non-linear relationships and feature interactions. If both have similar accuracy, it indicates linear separability in data.</p>
+
+          <div style="display:flex; justify-content:center;">
+  <img src="output/conf3.png" alt="Example"
+  style="width:900px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+
+        </section>
+
+        <section class="card section">
+          
+      <h2>Visualization &amp; Interpretation</h2>
+
+      <h3>Confusion Matrix</h3>
+      <p class="lead">Shows how many true and false predictions were made by the model.</p>
+      <ul class="bullet-list">
+        <li><strong>Diagonal cells</strong> = correct predictions.</li>
+        <li><strong>Off-diagonal</strong> = misclassifications.</li>
+      </ul>
+
+      <h3>Accuracy Comparison Chart</h3>
+      <p class="lead">Compares model accuracies side-by-side.</p>
+      <ul class="bullet-list">
+        <li>Random Forest often performs slightly better due to non-linear decision boundaries.</li>
+        <li>Logistic Regression offers easier interpretability.</li>
+      </ul>
+        </section>
+
+        <section class="card section">
+         <h2 >Project Milestone — Week 6</h2>
+
+        <p style="margin-top:12px;font-weight:600">Milestone: Build and evaluate classification models for the E-commerce Recommendation System.</p>
+
+        <ul >
+          <li>Predict customer satisfaction category.</li>
+          <li>Measure performance using multiple evaluation metrics (Accuracy, Precision, Recall, F1).</li>
+          <li>Compare and interpret model results visually (confusion matrix, comparison chart).</li>
+        </ul>
+
+        <p class="muted-small">This milestone is the second major step of your semester project — progressing from numeric prediction (Week 5) to categorical classification (Week 6).</p>
+      
+    </section>
+
+        <footer class="muted">Generated: Week 6 – Supervised Learning (Classification Models)</footer>
+      </main>
+
+      <aside class="sidebar">
+        <div class="card">
+          
+
+          <h2 style="margin-top:12px">Details</h2>
+          <div class="kv"><div class="k">Training Samples:</div><div class="v">68725</div></div>
+          <div class="kv"><div class="k">Testing Samples:</div><div class="v">17182</div></div>
+          <div class="kv"><div class="k">Total Rows:</div><div class="v">85907</div></div>
+
+          <h3 style="margin-top:12px">Legend</h3>
+          <p class="muted small"style="font-size:18px; line-height:1.7; color:#000; font-family:'Times New Roman', Times, serif;">• TP = True Positive <br> • TN = True Negative <br> • FP = False Positive <br>• FN = False Negative</p>
+
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
