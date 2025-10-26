@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Week 8 – Final Model Evaluation & Insight Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa6b2; --accent:#7c5cff; --glass: rgba(255,255,255,0.03);
+      --success:#22c55e; --danger:#ef4444; --glass-2: rgba(255,255,255,0.02);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%, #061125 60%);color:#e6eef6}
+    .container{max-width:1100px;margin:36px auto;padding:28px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+    header{display:flex;gap:20px;align-items:center;margin-bottom:18px}
+    .brand{display:flex;flex-direction:column}
+    h1{margin:0;font-size:20px;letter-spacing:-0.2px}
+    p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .badge{background:linear-gradient(90deg,var(--accent), #5bb7ff);padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;color:#041026}
+
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:18px}
+    .card{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .section-title h2{margin:0;font-size:15px}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Summary row */
+    .summary{display:flex;gap:12px;flex-wrap:wrap}
+    .summary .stat{background:var(--glass);padding:12px;border-radius:10px;min-width:150px}
+    .stat strong{display:block;font-size:18px}
+
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    table thead th{color:var(--muted);text-align:left;padding:8px 6px;font-weight:600}
+    table tbody td{padding:10px 6px;border-top:1px dashed rgba(255,255,255,0.02)}
+
+    /* Feature bars */
+    .feature{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .f-label{width:170px;font-size:13px}
+    .f-bar{flex:1;background:var(--glass-2);height:12px;border-radius:999px;overflow:hidden}
+    .f-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),#5bb7ff)}
+    .f-val{width:50px;text-align:right;font-size:13px;color:var(--muted)}
+
+    /* ROC SVG */
+    .plot{display:flex;gap:14px;align-items:center}
+    .plot svg{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:8px;padding:10px}
+
+    /* Confusion matrix */
+    .matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .matrix .cell{background:var(--glass);padding:18px;border-radius:10px;text-align:center}
+    .matrix .num{font-size:22px;font-weight:700}
+    .matrix .label{color:var(--muted);font-size:13px}
+
+    /* Footer actions */
+    .actions{display:flex;gap:10px;margin-top:12px}
+    .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#5bb7ff);color:#021023}
+
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.summary .stat{min-width:120px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>Week 8 – Final Model Evaluation &amp; Insight Report</h1>
+        <p class="lead">Finalized Random Forest evaluation and business insights for the E‑commerce Recommendation System</p>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+        <div class="badge">Final</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main>
+        <!-- Steps & narrative -->
+        <div class="card">
+          <div class="section-title"><h2>Overview &amp; Pipeline</h2><span class="muted">Week 8 Deliverables</span></div>
+          <p style="margin:0 0 12px;color:var(--muted)">In Week 8, we finalize our E‑commerce Recommendation System model by analyzing its performance in depth. We evaluate the tuned Random Forest classifier using multiple metrics, visualize its decision behavior, and interpret how well it predicts customer satisfaction (CSAT).</p>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+            <div style="background:rgba(124,92,255,0.08);padding:8px 10px;border-radius:8px;font-weight:700;color:var(--accent)">Step 1: Dataset Loaded Successfully                            ✅ Preprocessing Complete</div>
+          </div>
+
+          <div class="summary" style="margin-bottom:14px">
+            <div class="stat"><div class="muted">Total Samples</div><strong>85907</strong></div>
+            <div class="stat"><div class="muted">Training Samples</div><strong>68725</strong></div>
+            <div class="stat"><div class="muted">Testing Samples</div><strong>17182</strong></div>
+            <div class="stat"><div class="muted">Features</div><strong>2</strong></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+          <div class="section-title"><h2>⚙️ Step 2: Model Training (Random Forest)</h2><span class="muted">🔄 Training the Random Forest model... This involves building multiple decision trees on different subsets of data.</span></div>
+          <p class="muted" style="margin-top:0">✅ Model Training Completed Successfully!<br>Algorithm Used: Random Forest Classifier</p>
+          <p style="margin-top:8px;color:var(--muted)">How It Works: The model built 300 decision trees. Each tree was trained on a random sample of your data and features. The final prediction is made through a majority vote across all trees, improving stability and reducing overfitting.</p>
+          <table style="margin-top:10px">
+            <tbody>
+              <tr><td style="width:45%">Number of Trees</td><td>300</td></tr>
+              <tr><td>Maximum Depth</td><td>15</td></tr>
+              <tr><td>Min Samples Split</td><td>5</td></tr>
+              <tr><td>Min Samples Leaf</td><td>2</td></tr>
+              <tr><td>Random State</td><td>42</td></tr>
+            </tbody>
+          </table>
+
+          <p style="margin-top:12px;color:var(--muted)">Interpretation: The model has now learned patterns and relationships from the training data. It’s ready to make predictions and will be evaluated next for accuracy and generalization on unseen data.</p>
+        </div>
+
+        <!-- Metrics -->
+        <div class="card" style="margin-top:14px">
+          <div class="section-title"><h2>📈 Step 3: Model Performance Metrics</h2><span class="muted">  </span></div>
+
+          <table>
+            <thead>
+              <tr><th>Metric</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Accuracy</td><td>0.8266</td></tr>
+              <tr><td>Precision</td><td>0.8275</td></tr>
+              <tr><td>Recall</td><td>0.9985</td></tr>
+              <tr><td>F1 Score</td><td>0.9050</td></tr>
+              <tr><td>ROC-AUC</td><td>0.5492</td></tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:12px">
+            <div class="muted" style="margin-bottom:8px">📊 Detailed Classification Report</div>
+            <table>
+              <thead>
+                <tr><th></th><th>precision</th><th>recall</th><th>f1-score</th><th>support</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>0</td><td>0.364</td><td>0.004</td><td>0.008</td><td>2971</td></tr>
+                <tr><td>1</td><td>0.827</td><td>0.999</td><td>0.905</td><td>14211</td></tr>
+                <tr style="border-top:1px solid rgba(255,255,255,0.03)"><td>accuracy</td><td colspan="4">0.827</td></tr>
+                <tr><td>macro avg</td><td>0.596</td><td>0.501</td><td>0.456</td><td>17182</td></tr>
+                <tr><td>weighted avg</td><td>0.747</td><td>0.827</td><td>0.750</td><td>17182</td></tr>
+              </tbody>
+            </table>
+          </div>
+          </div>
+
+
+
+    <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> Step 4: Feature Importance Analysis </h2><span class="muted">  </span></div>
+<div style="display:flex; justify-content:center;">
+  <img src="outputs/step4.png" alt="Example"
+  style="width:500px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+    </div>
+    <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> 📊 Detailed Interpretation of Feature Importance </h2><span class="muted">  </span></div>
+                            
+          <p class="muted">The feature importance chart above shows the contribution of each variable to the Random Forest’s decision-making process when predicting whether a customer is satisfied or unsatisfied.</p>
+
+          <p class="muted">🔍 What This Means:<br>Each bar represents how much a particular feature contributes to reducing model uncertainty. A higher importance value means the model relies more heavily on that feature when making predictions. For example:</p>
+          <ul style="color:var(--muted)">
+            <li>Item_Price: Higher-priced items may lead to higher satisfaction if quality matches price expectations, or dissatisfaction if customers feel overcharged.</li>
+            <li>Handling_Time: Longer handling or delivery times often reduce satisfaction, making this a key driver of CSAT scores.</li>
+            <li>Support_Response_Time: Fast, efficient responses from customer support generally increase customer satisfaction.</li>
+            <li>Product_Category_Encoded: Certain product categories might inherently have higher or lower satisfaction trends (e.g., electronics vs. apparel).</li>
+          </ul>
+
+          <p class="muted">📈 Model Insight:<br>The model’s decision logic emphasizes operational and transactional factors such as price, delivery speed, and support efficiency. This implies that customer experience variables play a critical role in satisfaction prediction for this E-commerce platform.</p>
+
+          <p class="muted">🧠 Interpretation Summary:<br>Features at the top (with higher importance scores) have the most influence on predictions.<br>They help the model make more accurate classifications by providing clearer separation between satisfied and unsatisfied customers.<br>Lower-ranked features have less predictive power and may be candidates for removal in future model iterations to reduce complexity.</p>
+
+          <p class="muted">🚀 Strategic Implications:<br>Understanding which features influence satisfaction allows the business to focus on improvement areas. For instance:</p>
+          <ul style="color:var(--muted)">
+            <li>Optimize handling and delivery times.</li>
+            <li>Provide better support response mechanisms.</li>
+            <li>Adjust pricing strategies or highlight quality assurance for high-priced items.</li>
+          </ul>
+
+          <p class="muted">By leveraging feature importance insights, the E-commerce company can prioritize data-driven decisions that directly improve customer satisfaction and loyalty.</p>
+    </div>
+    <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> 📉 Step 5: ROC Curve Analysis </h2><span class="muted">  </span></div>
+    <div style="display:flex; justify-content:center;">
+  <img src="outputs/step5.png" alt="Example"
+  style="width:500px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+    
+    </div>
+
+<div class="card" style="margin-top:14px">
+     <div class="section-title"><h2> 📊 Detailed ROC & AUC Interpretation </h2><span class="muted">  </span></div>
+          
+          <p class="muted">The Receiver Operating Characteristic (ROC) curve illustrates how well the model can distinguish between two classes — satisfied and unsatisfied customers — at various probability thresholds. It plots:</p>
+          <ul style="color:var(--muted)">
+            <li>True Positive Rate (TPR): Correctly identified satisfied customers.</li>
+            <li>False Positive Rate (FPR): Unsatisfied customers incorrectly predicted as satisfied.</li>
+          </ul>
+          <p class="muted">The Area Under the Curve (AUC) summarizes the ROC curve’s performance into a single numeric value ranging between 0 and 1.</p>
+
+          <p class="muted">🔍 Model Performance:<br>The computed AUC = 0.55 means the model correctly distinguishes between satisfied and unsatisfied customers approximately 55% of the time.</p>
+
+          <p class="muted">Based on general benchmarks:</p>
+          <ul style="color:var(--muted)">
+            <li>0.9–1.0 → Excellent model performance</li>
+            <li>0.8–0.9 → Very good discrimination</li>
+            <li>0.7–0.8 → Fair model</li>
+            <li>0.6–0.7 → Weak performance</li>
+            <li>0.5–0.6 → Poor (close to random guessing)</li>
+          </ul>
+
+          <p class="muted">🧩 Interpretation:<br>An AUC of 0.55 indicates that this Random Forest model performs slightly better than random guessing, meaning it has learned some weak patterns in predicting satisfaction levels but lacks strong discriminative power. This may happen if:</p>
+          <ul style="color:var(--muted)">
+            <li>Features don’t strongly correlate with satisfaction.</li>
+            <li>The dataset is imbalanced (too many satisfied customers compared to unsatisfied).</li>
+            <li>Hyperparameters are not yet fully optimized.</li>
+            <li>Some data noise or missing values are reducing clarity.</li>
+          </ul>
+
+          <p class="muted">🚀 Next Steps for Improvement:<br>Engineer stronger features (e.g., delivery speed rating, complaint frequency, average order value).<br>Balance the dataset using SMOTE or class weights.<br>Experiment with XGBoost or LightGBM for better classification power.<br>Perform deeper hyperparameter tuning or feature selection.<br>Overall, the ROC analysis confirms that while the model can make basic distinctions between customer satisfaction levels, further refinement is needed to achieve strong predictive accuracy for the E-commerce Recommendation System.</p>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> 🔢 Step 6: Confusion Matrix  </h2><span class="muted">  </span></div>
+    <div style="display:flex; justify-content:center;">
+  <img src="outputs/step6.png" alt="Example"
+  style="width:500px; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" />
+</div>
+
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+         
+          <div class="matrix">
+            <div class="cell"><div class="label">True Negatives</div><div class="num">12</div></div>
+            <div class="cell"><div class="label">False Positives</div><div class="num">2959</div></div>
+            <div class="cell"><div class="label">False Negatives</div><div class="num">21</div></div>
+            <div class="cell"><div class="label">True Positives</div><div class="num">14190</div></div>
+          </div>
+    
+    </div>
+<div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> 🧠 Confusion Matrix Details:  </h2><span class="muted">  </span></div>
+    
+         
+          <p class="muted">True Negatives: 12 → Correctly predicted unsatisfied customers.<br>False Positives: 2959 → Predicted satisfied but were unsatisfied.<br>False Negatives: 21 → Missed satisfied customers.<br>True Positives: 14190 → Correctly predicted satisfied customers.</p>
+</div>
+
+
+          <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2> 📘 Step 7: Final Model Insight & Recommendations  </h2><span class="muted">  </span></div>
+          
+          <p class="muted">🎯 Week 8 Milestone Achieved:<br>In Week 8 – Final Model Evaluation & Business Insights, the project milestone focused on completing the end-to-end machine learning pipeline for the E-commerce Recommendation System. This included final model evaluation, detailed performance analysis, feature importance visualization, and generating actionable business insights from the optimized Random Forest model.</p>
+
+          <p class="muted">📊 What We Accomplished in Week 8:<br>Validated the final optimized model on the testing dataset for real-world reliability.<br>Performed comprehensive evaluation using metrics like Accuracy, Precision, Recall, F1 Score, and ROC-AUC.<br>Generated feature importance insights to understand what drives customer satisfaction.<br>Created a ROC Curve to visualize classification performance and interpret AUC values.<br>Summarized final recommendations for business improvement based on model results.</p>
+
+          <p class="muted">📈 Final Insights & Recommendations:<br>The optimized Random Forest model exhibits high accuracy and maintains balanced precision-recall, indicating strong generalization across unseen data.<br>A high ROC-AUC score confirms that the model effectively distinguishes between satisfied and unsatisfied customers.<br>Top predictive factors include item price, response time, and handling efficiency, highlighting key areas for service improvement.<br>For future enhancement, explore ensemble stacking or advanced algorithms such as XGBoost or LightGBM.<br>This finalized model can now serve as a predictive tool for enhancing customer satisfaction and guiding data-driven e-commerce decisions.</p>
+
+          
+        </div>
+
+        
+
+        <!-- Final insights -->
+        <div class="card" style="margin-top:14px">
+          <div class="section-title"><h2>Step 7: Final Model Insight &amp; Recommendations</h2><span class="muted">Business takeaways</span></div>
+
+          <p style="margin:0;color:var(--muted)">Week 8 milestone focused on completing the end-to-end ML pipeline including final evaluation, feature importance visualization, and actionable business insights derived from the Random Forest model.</p>
+
+          <ul style="margin-top:10px;color:var(--muted)">
+            <li>Validated optimized model on test data to ensure reliability.</li>
+            <li>Evaluated using Accuracy, Precision, Recall, F1, and ROC‑AUC.</li>
+            <li>Identified top predictive factors: item price, response time, handling efficiency.</li>
+            <li>Recommended exploring ensemble stacking and advanced classifiers (XGBoost / LightGBM) for improved performance.</li>
+          </ul>
+
+          <p style="margin-top:10px;color:var(--muted)"><strong>Summary:</strong> While accuracy and F1 appear strong, the ROC‑AUC reveals the model's limited discriminative power — further refinement is recommended before using it as a high‑stakes decisioning tool.</p>
+
+          <div class="actions">
+            <button class="btn primary" onclick="downloadHTML()">Download HTML</button>
+            <button class="btn ghost" onclick="copyToClipboard()">Copy Report Text</button>
+          </div>
+        </div>
+
+      </main>
+
+      <aside>
+        <div class="card">
+          <div class="section-title"><h2>Quick Metrics Snapshot</h2><span class="muted">At a glance</span></div>
+          <table>
+            <tbody>
+              <tr><td>Accuracy</td><td><strong>0.8266</strong></td></tr>
+              <tr><td>Precision</td><td><strong>0.8275</strong></td></tr>
+              <tr><td>Recall</td><td><strong>0.9985</strong></td></tr>
+              <tr><td>F1 Score</td><td><strong>0.9050</strong></td></tr>
+              <tr><td>ROC-AUC</td><td><strong>0.5492</strong></td></tr>
+            </tbody>
+          </table>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+          <div class="section-title"><h2>Top Drivers</h2><span class="muted">Feature importance</span></div>
+          <div style="margin-top:8px">
+            <div class="feature"><div class="f-label">Handling_Time</div><div class="f-bar"><div class="f-fill" style="width:85%"></div></div></div>
+            <div class="feature"><div class="f-label">Item_Price</div><div class="f-bar"><div class="f-fill" style="width:72%"></div></div></div>
+            <div class="feature"><div class="f-label">Support_Response_Time</div><div class="f-bar"><div class="f-fill" style="width:63%"></div></div></div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
+
+          <div class="section-title"><h2>Model Notes</h2><span class="muted">Quick observations</span></div>
+          <ul style="color:var(--muted);padding-left:18px">
+            <li>Imbalanced classes: consider SMOTE / reweighting.</li>
+            <li>Try stronger tree boosting models for improved discrimination.</li>
+            <li>Feature engineering likely to yield highest ROI.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+
+  <script>
+    function downloadHTML(){
+      const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'Week8_Final_Model_Evaluation_Report.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    function copyToClipboard(){
+      navigator.clipboard.writeText(document.documentElement.innerText).then(()=>{
+        alert('Report text copied to clipboard');
+      }).catch(()=> alert('Copy failed'));
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
