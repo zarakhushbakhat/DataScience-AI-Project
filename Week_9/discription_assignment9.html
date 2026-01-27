@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 9 Assignment – ANN for CSAT Analysis</title>
+  <style>
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:#f4f6f8;
+      color:#1f2937;
+      line-height:1.6;
+    }
+    .container{
+      max-width:1100px;
+      margin:auto;
+      padding:20px;
+    }
+    header{
+      background:#ffffff;
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom:20px;
+    }
+    h1{margin:0;color:#1d4ed8}
+    h2{color:#1e40af;margin-top:30px}
+    h3{color:#2563eb;margin-top:20px}
+    .card{
+      background:#ffffff;
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom:20px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+    th,td{
+      padding:10px;
+      border-bottom:1px solid #e5e7eb;
+      text-align:left;
+    }
+    th{background:#f1f5f9}
+    pre{
+      background:#f8fafc;
+      padding:15px;
+      overflow:auto;
+      border-radius:8px;
+      font-size:14px;
+    }
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:15px;
+      margin-top:15px;
+    }
+    .metric-box{
+      background:#f8fafc;
+      padding:15px;
+      border-radius:8px;
+      border-left:5px solid #2563eb;
+    }
+
+.stat-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .stat{
+      background:linear-gradient(180deg,#ffffff,#fbfdff);
+      border-radius:10px;
+      padding:12px;
+      box-shadow: 0 4px 10px rgba(13, 61, 110, 0.04);
+    }
+
+    .stat strong{ display:block; font-size:18px; color:#062742; }
+    .stat span{ display:block; color:var(--muted); font-size:13px; margin-top:6px; }
+
+    ul.checklist{ padding-left:18px; margin:8px 0 0 0; color:var(--muted); }
+    ul.checklist li{ margin:8px 0; }
+
+
+    footer{
+      text-align:center;
+      color:#6b7280;
+      margin:30px 0 10px;
+    }
+    @media(max-width:600px){
+      h1{font-size:20px}
+      h2{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Week 9 Assignment – Neural Networks Basics</h1>
+  <p><strong>Course:</strong> Applied Data Science with AI &nbsp;|&nbsp; <strong>Semester:</strong> BSSE 7th</p>
+  <p><strong>Topic:</strong> Artificial Neural Network (ANN) for E‑Commerce CSAT Prediction</p>
+</header>
+
+<section class="card">
+  <h2>📘 Assignment Overview</h2>
+  <p>
+    In Week 9, the focus was on understanding the fundamentals of <strong>Artificial Neural Networks (ANN)</strong> and applying them to a real‑world dataset. An ANN model was built to predict <strong>Customer Satisfaction (CSAT)</strong> for an e‑commerce support dataset. The objective was to classify customers into satisfied and not satisfied categories using a binary classification approach.
+  </p>
+  <p>
+    The model was trained on preprocessed data from previous weeks and evaluated using training/validation accuracy, loss trends, classification report, and ROC‑AUC score.
+  </p>
+
+  <p class="muted">
+          In Week 9, an Artificial Neural Network (ANN) model was developed to predict <strong>Customer Satisfaction (CSAT)</strong> based on customer support features.
+          The classification target:
+        </p>
+        <ul class="checklist">
+          <li><strong>1</strong> → Satisfied (CSAT ≥ 4)</li>
+          <li><strong>0</strong> → Not Satisfied (CSAT &lt; 4)</li>
+        </ul>
+        <p class="muted">The model was trained using the Week 8 cleaned dataset and evaluated via accuracy, recall, F1-score, ROC-AUC and confusion matrix.</p>
+      </section>
+</section>
+
+<div class="card">
+      <h2>2. Dataset Overview</h2>
+
+      <div class="stat-grid" aria-hidden="true">
+        <div class="stat">
+          <strong>85,907</strong>
+          <span>Total rows (original)</span>
+        </div>
+        <div class="stat">
+          <strong>20</strong>
+          <span>Total columns (original)</span>
+        </div>
+        <div class="stat">
+          <strong>68,725</strong>
+          <span>Training samples (80%)</span>
+        </div>
+      </div>
+
+      <table aria-label="dataset-preprocess">
+        <thead>
+          <tr>
+            <th>Preprocessing Steps</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ID columns removed</td><td>Columns containing identifiers (id, uuid) dropped</td></tr>
+          <tr><td>Missing values</td><td>Numeric missing values filled with median</td></tr>
+          <tr><td>Categorical encoding</td><td>Low-cardinality object columns converted to dummies</td></tr>
+          <tr><td>Target created</td><td>CSAT_Category = 1 if CSAT Score ≥ 4 else 0</td></tr>
+          <tr><td>Final feature count</td><td>2 (after encoding/selection)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+<section class="card">
+  <h2>📂 Dataset & Training Details</h2>
+  <table>
+    <tr><th>Dataset Shape</th><td>(85,907, 20)</td></tr>
+    <tr><th>Training Samples</th><td>68,725</td></tr>
+    <tr><th>Number of Features</th><td>2</td></tr>
+    <tr><th>Epochs</th><td>50</td></tr>
+    <tr><th>Optimizer</th><td>Adam</td></tr>
+    <tr><th>Loss Function</th><td>Binary Crossentropy</td></tr>
+  </table>
+</section>
+
+
+<div class="card">
+      <h2>3. ANN Model Architecture</h2>
+
+      <table aria-label="architecture">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Type</th>
+            <th>Units</th>
+            <th>Activation</th>
+            <th>Parameters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Input Layer</td><td>Dense</td><td>32</td><td>ReLU</td><td>96</td></tr>
+          <tr><td>Hidden Layer</td><td>Dense</td><td>16</td><td>ReLU</td><td>528</td></tr>
+          <tr><td>Output Layer</td><td>Dense</td><td>1</td><td>Sigmoid</td><td>17</td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:12px;">
+        <p class="muted"><strong>Total trainable parameters:</strong> 641</p>
+        <p class="muted"><strong>Optimizer:</strong> Adam &nbsp; • &nbsp; <strong>Loss:</strong> Binary Crossentropy &nbsp; • &nbsp; <strong>Metric:</strong> Accuracy</p>
+      </div>
+    </div>
+
+<div class="card">
+  <h3>Model Parameters Summary</h3>
+  <table>
+    <tr><th>Total Parameters</th><td>1,925 (7.52 KB)</td></tr>
+    <tr><th>Trainable Parameters</th><td>641 (2.50 KB)</td></tr>
+    <tr><th>Non‑Trainable Parameters</th><td>0 (0.00 B)</td></tr>
+    <tr><th>Optimizer Parameters</th><td>1,284 (5.02 KB)</td></tr>
+  </table>
+</section>
+</div>
+
+<section class="card">
+  <h2>📈 Training Performance</h2>
+  <p>The ANN model was trained for 50 epochs. Training and validation accuracy remained stable around <strong>82%</strong>, while loss stayed near <strong>0.46</strong>, indicating consistent learning without overfitting.</p>
+
+  <h3>Training Graphs</h3>
+  <p><em>Figure 1:</em> Training vs Validation Accuracy</p>
+  <img src="images/accuracy_curve.png" alt="Accuracy Curve" style="max-width:100%;border-radius:8px;margin-bottom:15px">
+
+  <section>
+  <h3>1. Training vs Validation Accuracy Curve</h3>
+
+  <p class="muted"><strong>Graph Used:</strong> Training vs Validation Accuracy</p>
+
+  <h4 style="margin-top:10px;">📌 Interpretation</h4>
+  <p class="muted">
+    The training and validation accuracy curves remain stable and closely aligned,
+    converging around <strong>82–83%</strong> accuracy across epochs.
+    The absence of a large gap between the two curves indicates that the ANN model
+    is <strong>not overfitting</strong> the training data.
+  </p>
+
+  <p class="muted">
+    Furthermore, the early stabilization of accuracy suggests that the ANN has
+    learned basic decision patterns efficiently within a limited number of epochs.
+    However, the lack of significant improvement over time also indicates that the
+    model does not capture deeper non-linear relationships, likely due to:
+  </p>
+
+  <ul class="checklist">
+    <li>Limited feature diversity after preprocessing</li>
+    <li>Strong class imbalance in CSAT labels</li>
+  </ul>
+
+  <div class="note">
+    <strong>✅ Conclusion</strong>
+    <ul style="margin:8px 0 0 18px;">
+      <li>✔ Model generalizes well</li>
+      <li>✔ No overfitting observed</li>
+      <li>✔ Learning capacity is moderate</li>
+    </ul>
+  </div>
+</section>
+</section>
+
+
+<section class="card">
+  <p><em>Figure 2:</em> Training vs Validation Loss</p>
+  <img src="images/loss_curve.png" alt="Loss Curve" style="max-width:100%;border-radius:8px">
+
+<section>
+  <h3>2. Training vs Validation Loss Curve</h3>
+
+  <p class="muted"><strong>Graph Used:</strong> Training vs Validation Loss</p>
+
+  <h4 style="margin-top:10px;">📌 Interpretation</h4>
+  <p class="muted">
+    Both training and validation loss curves decrease initially and then stabilize
+    around a value of approximately <strong>0.46</strong>, remaining close throughout
+    the training process. This behavior confirms that the ANN model converges
+    smoothly without any signs of instability.
+  </p>
+
+  <p class="muted">
+    The parallel nature of the loss curves suggests that the model’s predictions
+    on unseen validation data are consistent with its training performance,
+    further reinforcing the <strong>absence of overfitting</strong>.
+  </p>
+
+  <p class="muted">
+    However, the plateauing loss value indicates limited error reduction,
+    implying that the ANN has reached its learning capacity under the current
+    network architecture and available feature set.
+  </p>
+
+  <div class="note">
+    <strong>✅ Conclusion</strong>
+    <ul style="margin:8px 0 0 18px;">
+      <li>✔ Stable convergence observed</li>
+      <li>✔ No underfitting or overfitting detected</li>
+      <li>✔ Model complexity may be insufficient for learning deeper patterns</li>
+    </ul>
+  </div>
+</section>
+
+
+</section>
+
+<section class="card">
+  <h2>📊 Model Evaluation Results</h2>
+
+  <h3>Classification Report</h3>
+  <table>
+    <tr>
+      <th>Class</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1‑Score</th>
+      <th>Support</th>
+    </tr>
+    <tr>
+      <td>0 (Not Satisfied)</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>2,971</td>
+    </tr>
+    <tr>
+      <td>1 (Satisfied)</td>
+      <td>0.827</td>
+      <td>1.000</td>
+      <td>0.905</td>
+      <td>14,211</td>
+    </tr>
+    <tr>
+      <th>Accuracy</th>
+      <th >0.827</th>
+      <th >0.827</th>
+      <th >0.827</th>
+      <th >0.827</th>
+    </tr>
+    <tr>
+      <th>Macro Avg</th>
+      <td>0.414</td>
+      <td>0.500</td>
+      <td>0.453</td>
+      <td>17,182</td>
+    </tr>
+    <tr>
+      <th>Weighted Avg</th>
+      <td>0.684</td>
+      <td>0.827</td>
+      <td>0.749</td>
+      <td>17,182</td>
+    </tr>
+  </table>
+</section>
+
+<section class="card">
+  <h3>Evaluation Graphs</h3>
+  <p><em>Figure 3:</em> Confusion Matrix</p>
+  <img src="images/confusion_matrix.png" alt="Confusion Matrix" style="max-width:100%;border-radius:8px;margin-bottom:15px">
+
+<section>
+  <h3>3. Confusion Matrix</h3>
+
+  <p class="muted"><strong>Graph Used:</strong> Confusion Matrix – ANN Model</p>
+
+  <h4 style="margin-top:10px;">📌 Interpretation</h4>
+  <p class="muted">
+    The confusion matrix reveals a strong bias toward the majority class
+    (<strong>Satisfied customers</strong>):
+  </p>
+
+  <ul class="checklist">
+    <li>The model correctly predicts most <strong>CSAT = 1 (Satisfied)</strong> cases</li>
+    <li>Almost all <strong>CSAT = 0 (Not Satisfied)</strong> instances are misclassified</li>
+    <li>This imbalance indicates the ANN prioritizes overall accuracy by favoring the dominant class, which is common in highly imbalanced datasets</li>
+  </ul>
+
+  <h4 style="margin-top:10px;">🔍 Key Insight</h4>
+  <p class="muted">
+    Despite high overall accuracy, the model fails to effectively identify
+    dissatisfied customers (<strong>CSAT = 0</strong>), which is critical in
+    real-world customer support analysis.
+  </p>
+
+  <h4 style="margin-top:10px;">⚠️ Limitation</h4>
+  <ul class="checklist">
+    <li>Poor recall for <strong>CSAT = 0</strong></li>
+    <li>High false negatives for dissatisfied customers</li>
+  </ul>
+</section>
+
+</section>
+
+<section class="card">
+
+  <p><em>Figure 4:</em> ROC Curve</p>
+  <img src="images/roc_curve.png" alt="ROC Curve" style="max-width:100%;border-radius:8px">
+<section>
+  <h3>4. ROC Curve</h3>
+
+  <p class="muted"><strong>Graph Used:</strong> ROC Curve – ANN Model</p>
+
+  <h4 style="margin-top:10px;">📌 Interpretation</h4>
+  <p class="muted">
+    The ROC curve lies close to the diagonal reference line, with an
+    <strong>AUC score ≈ 0.55</strong>, which is only marginally better than
+    random guessing (AUC = 0.50).
+  </p>
+
+  <p class="muted">
+    This indicates that while the ANN can classify satisfied customers
+    reasonably well, it struggles to separate satisfied and unsatisfied classes
+    effectively across different probability thresholds.
+  </p>
+
+  <div class="note">
+    <strong>✅ Conclusion</strong>
+    <ul style="margin:8px 0 0 18px;">
+      <li>✔ Weak discriminative power</li>
+      <li>✔ Performance limited by class imbalance and feature constraints</li>
+    </ul>
+  </div>
+</section>
+
+
+  </section>
+  <section class="card">
+  <h3>ROC‑AUC Score</h3>
+  <table>
+    <tr><th>ROC‑AUC</th><td>0.5518</td></tr>
+  </table>
+  <section>
+  <h3>4. ROC Curve</h3>
+
+  <p class="muted"><strong>Graph Used:</strong> ROC Curve – ANN Model</p>
+
+  <h4 style="margin-top:10px;">📌 Interpretation</h4>
+  <p class="muted">
+    The ROC curve lies close to the diagonal reference line, with an
+    <strong>AUC score ≈ 0.55</strong>, which is only marginally better than
+    random guessing (AUC = 0.50).
+  </p>
+
+  <p class="muted">
+    This indicates that while the ANN can classify satisfied customers
+    reasonably well, it struggles to separate satisfied and unsatisfied classes
+    effectively across different probability thresholds.
+  </p>
+
+  <div class="note">
+    <strong>✅ Conclusion</strong>
+    <ul style="margin:8px 0 0 18px;">
+      <li>✔ Weak discriminative power</li>
+      <li>✔ Performance limited by class imbalance and feature constraints</li>
+    </ul>
+  </div>
+</section>
+
+</section>
+
+<section class="card">
+  <h2>Analysis & Interpretation</h2>
+  <ul>
+    <li>The model shows good accuracy but poor performance for the minority class.</li>
+    <li>Recall for class <strong>1 (Satisfied)</strong> is very high, indicating bias toward the majority class.</li>
+    <li>Low ROC‑AUC score suggests limited discrimination capability.</li>
+    <li>No signs of overfitting or underfitting were observed.</li>
+  </ul>
+
+  
+      <h2>Key Findings</h2>
+      <ul class="checklist">
+        <li>Model is stable but biased towards the majority class (predicts mostly "Satisfied").</li>
+        <li>High accuracy (~82.7%) is not representative of model quality due to imbalance.</li>
+        <li>ROC-AUC (0.5518) shows weak discriminative performance.</li>
+        <li>ANN's inability to detect dissatisfied customers (class 0) is the main failure.</li>
+      </ul>
+
+</section>
+
+<section class="card">
+  <h2>🚀 Week 9 Milestone</h2>
+  <p>
+    ✔ ANN baseline model successfully implemented and evaluated.<br>
+    ✔ Performance compared with traditional ML models from previous weeks.<br>
+    ✔ Insights gained regarding data imbalance and ANN limitations.
+  </p>
+  <p><strong>Next Week Goal:</strong> Apply advanced deep learning models (CNN/RNN) where applicable.</p>
+</section>
+
+<footer>
+  <p>Week 9 – Neural Networks Basics | Data Science & AI Course</p>
+</footer>
+
+</div>
+</body>
+</html>
