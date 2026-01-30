@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10 Recommendation System Report</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f0f4f8;
+    color: #1f2937;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    margin: 0;
+    color: #1d4ed8;
+    text-align: center;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5em;
+}
+
+h2 {
+    color: #1e40af;
+    margin-top: 30px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 5px;
+}
+
+h3 {
+    color: #2563eb;
+    margin-top: 20px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+th {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    color: #fff;
+}
+
+tbody tr:nth-child(even) {
+    background: #f3f4f6;
+}
+
+tbody tr:hover {
+    background: #dbeafe;
+    transition: 0.3s;
+}
+
+.highlight {
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.metric-box {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.summary li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.milestones li {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+footer {
+    text-align: center;
+    color: #6b7280;
+    margin: 30px 0 10px;
+    font-size: 14px;
+}
+
+@media(max-width: 600px) {
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+}
+</style>
+
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Week 10 Title -->
+        <h1 class="text-center mb-4">Week 10: Advanced Deep Learning</h1>
+
+        <!-- Introduction -->
+         <section class="card">
+        <div class="section">
+            <h2>Introduction</h2>
+            <p>
+                Week 10 focuses on developing a <span class="highlight">Customer Recommendation System</span> 
+                using historical customer data and product interactions. The goal is to 
+                provide personalized product category recommendations to enhance customer satisfaction 
+                and engagement. By analyzing customer purchase patterns, feedback, and 
+                interaction metrics, we can identify products each customer is likely to be interested in.
+            </p>
+        </div>
+         </section>
+
+        <!-- Objectives / Overview -->
+         <section class="card">
+        <div class="section">
+            <h2>Objectives & Overview</h2>
+            <p>The main objectives of Week 10 are:</p>
+            <ul>
+                <li>Load and explore the customer dataset with all necessary fields.</li>
+                <li>Create a <strong>User-Item Matrix</strong> to represent customer interactions with product categories.</li>
+                <li>Normalize the User-Item Matrix to make the data suitable for similarity calculations.</li>
+                <li>Compute a <strong>User Similarity Matrix</strong> to identify similar customers.</li>
+                <li>Generate top product category recommendations for each customer based on similarity scores.</li>
+                <li>Save the final recommendations to a CSV file for further analysis or deployment.</li>
+            </ul>
+        </div>
+        </section>
+
+        <!-- Dataset Overview -->
+         <section class="card">
+        <div class="section">
+            <h2>Dataset Overview</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Column Names</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>Unique id</td></tr>
+                    <tr><td>1</td><td>channel_name</td></tr>
+                    <tr><td>2</td><td>category</td></tr>
+                    <tr><td>3</td><td>Sub-category</td></tr>
+                    <tr><td>4</td><td>Customer Remarks</td></tr>
+                    <tr><td>5</td><td>Order_id</td></tr>
+                    <tr><td>6</td><td>order_date_time</td></tr>
+                    <tr><td>7</td><td>Issue_reported at</td></tr>
+                    <tr><td>8</td><td>issue_responded</td></tr>
+                    <tr><td>9</td><td>Survey_response_Date</td></tr>
+                    <tr><td>10</td><td>Customer_City</td></tr>
+                    <tr><td>11</td><td>Product_category</td></tr>
+                    <tr><td>12</td><td>Item_price</td></tr>
+                    <tr><td>13</td><td>connected_handling_time</td></tr>
+                    <tr><td>14</td><td>Agent_name</td></tr>
+                    <tr><td>15</td><td>Supervisor</td></tr>
+                    <tr><td>16</td><td>Manager</td></tr>
+                    <tr><td>17</td><td>Tenure Bucket</td></tr>
+                    <tr><td>18</td><td>Agent Shift</td></tr>
+                    <tr><td>19</td><td>CSAT Score</td></tr>
+                </tbody>
+            </table>
+        </div>
+         </section>
+
+        <!-- Sample User-Item Matrix -->
+         <section class="card">
+        <div class="section">
+            <h2>Sample User-Item Matrix</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Unique ID</th>
+                        <th>Affiliates</th>
+                        <th>Books & General merchandise</th>
+                        <th>Electronics</th>
+                        <th>Furniture</th>
+                        <th>GiftCard</th>
+                        <th>Home</th>
+                        <th>Home Appliences</th>
+                        <th>LifeStyle</th>
+                        <th>Mobile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0001f06a-bd9a-4888-9cf9-0a094a15eaf2</td>
+                        <td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    <tr>
+                        <td>00053812-fb74-4294-a9d1-5167c5a36c7d</td>
+                        <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td>
+                    </tr>
+                    <tr>
+                        <td>00064265-7bc3-4627-8e36-6e60a4895343</td>
+                        <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </section>
+
+        <!-- Sample Recommendations -->
+         <section class="card">
+        <div class="section">
+            <h2>Top Recommendations for Customer <span class="highlight">0001f06a-bd9a-4888-9cf9-0a094a15eaf2</span></h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Product Category</th>
+                        <th>Recommendation Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Affiliates</td><td>0</td></tr>
+                    <tr><td>Electronics</td><td>0</td></tr>
+                    <tr><td>Furniture</td><td>0</td></tr>
+                    <tr><td>GiftCard</td><td>0</td></tr>
+                    <tr><td>Home</td><td>0</td></tr>
+                    <tr><td>Home Appliences</td><td>0</td></tr>
+                    <tr><td>LifeStyle</td><td>0</td></tr>
+                    <tr><td>Mobile</td><td>0</td></tr>
+                </tbody>
+            </table>
+        </div>
+         </section>
+
+        <!-- Summary -->
+         <section class="card">
+        <div class="section">
+            <h2>Summary</h2>
+            <ul class="summary">
+                <li>Total Customers: <span class="highlight">17,196</span></li>
+                <li>Total Product Categories: <span class="highlight">9</span></li>
+                <li>Recommendations saved to: <strong>week10_recommendations.csv</strong></li>
+            </ul>
+        </div>
+         </section>
+
+         <section class="card">
+    <h2>Key Metrics</h2>
+    <div class="metrics">
+        <div class="metric-box">Total Customers: 17,196</div>
+        <div class="metric-box">Product Categories: 9</div>
+        <div class="metric-box">CSV Generated: week10_recommendations.csv</div>
+    </div>
+</section>
+
+
+        <!-- Week 10 Milestones -->
+         <section class="card">
+        <div class="section">
+            <h2>Week 10 Milestones</h2>
+            <ul class="milestones">
+                <li>Loaded and explored the dataset successfully.</li>
+                <li>Created the User-Item Matrix for all customers and product categories.</li>
+                <li>Normalized data to prepare for similarity computation.</li>
+                <li>Generated User Similarity Matrix and calculated top product recommendations.</li>
+                <li>Displayed top recommendations for each customer.</li>
+                <li>Saved final recommendations in CSV format for future use or deployment.</li>
+            </ul>
+        </div>
+        </section>
+
+    </div>
+</body>
+</html>

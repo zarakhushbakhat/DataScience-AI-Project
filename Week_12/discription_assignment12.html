@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Science Project - Week 12 Report</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  h1 {
+    margin: 0;
+    color: #1d4ed8;
+    text-align: center;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5em;
+  }
+
+  h2 {
+    color: #1e40af;
+    margin-top: 30px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 5px;
+  }
+
+  h3 {
+    color: #2563eb;
+    margin-top: 20px;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 40px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #2980B9;
+    color: white;
+  }
+
+  tr:nth-child(even) { background-color: #f2f2f2; }
+  .small-table th, .small-table td { font-size: 12px; padding: 6px 8px; }
+  ul { margin: 0 0 20px 20px; }
+
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+  }
+  .card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  @media(max-width: 600px) {
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Week 12 : Loaded Final Features & Recommendations</h1>
+
+<section class="card">
+<h2>1. Introduction</h2>
+<p>In Week 12, our focus is on **loading the final features** and generating **product recommendations** for users using collaborative filtering. 
+We build the **User-Item matrix**, compute **Item Similarity**, predict user ratings, and extract the **top 3 recommended products per user**. 
+This ensures our recommendation model is ready for deployment and evaluation.</p>
+</section>
+
+<section class="card">
+<h2>2. Objectives</h2>
+<ul>
+  <li>Load final feature dataset from Week 11 outputs.</li>
+  <li>Construct the User-Item matrix representing user-product interactions.</li>
+  <li>Compute Item Similarity Matrix using collaborative filtering techniques.</li>
+  <li>Predict product ratings for each user.</li>
+  <li>Generate and save top 3 product recommendations per user.</li>
+  <li>Document key metrics and milestones for Week 12.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>3. Week 12 Tasks / Assignment</h2>
+<ul>
+  <li>Load the final features dataset prepared in Week 11.</li>
+  <li>Create User-Item matrix with users as rows and products as columns.</li>
+  <li>Compute Item Similarity Matrix using cosine similarity.</li>
+  <li>Predict ratings for all users based on item similarity.</li>
+  <li>Extract top 3 recommended products per user and save as 'week12_recommendations.csv'.</li>
+  <li>Visualize sample outputs for verification.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>4. Outputs</h2>
+
+<h3>4.1 Final Features (Sample)</h3>
+<div style="overflow-x: auto; width: 100%;">
+<table>
+  <tr>
+    <th>Unique id</th><th>channel_name</th><th>category</th><th>Sub-category</th><th>Customer Remarks</th>
+    <th>Order_id</th><th>order_date_time</th><th>Issue_reported at</th><th>issue_responded</th><th>Survey_response_Date</th>
+    <th>Customer_City</th><th>Product_category</th><th>Item_price</th><th>connected_handling_time</th><th>Agent_name</th>
+    <th>Supervisor</th><th>Manager</th><th>Tenure Bucket</th><th>Agent Shift</th><th>CSAT Score</th>
+  </tr>
+  <tr>
+    <td>7e9ae164-6a8b-4521-a2d4-58f7c9fff13f</td><td>Outcall</td><td>Product Queries</td><td>Life Insurance</td><td>nan</td>
+    <td>c27c9bb4-fa36-4140-9f1f-21009254ffdb</td><td>nan</td><td>01/08/2023 11:13</td><td>01/08/2023 11:47</td><td>01-Aug-23</td>
+    <td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>Richard Buchanan</td>
+    <td>Mason Gupta</td><td>Jennifer Nguyen</td><td>On Job Training</td><td>Morning</td><td>5</td>
+  </tr>
+  <tr>
+    <td>b07ec1b0-f376-43b6-86df-ec03da3b2e16</td><td>Outcall</td><td>Product Queries</td><td>Product Specific Information</td><td>nan</td>
+    <td>d406b0c7-ce17-4654-b9de-f08d421254bd</td><td>nan</td><td>01/08/2023 12:52</td><td>01/08/2023 12:54</td><td>01-Aug-23</td>
+    <td>nan</td><td>nan</td><td>nan</td><td>nan</td><td>Vicki Collins</td>
+    <td>Dylan Kim</td><td>Michael Lee</td><td>>90</td><td>Morning</td><td>5</td>
+  </tr>
+</table>
+</div>
+
+</section>
+<section class="card">
+<h3>4.2 User-Item Matrix Sample</h3>
+<table class="small-table">
+  <tr>
+    <th>Unique id</th><th>Affiliates</th><th>Books & General merchandise</th><th>Electronics</th><th>Furniture</th>
+    <th>GiftCard</th><th>Home</th><th>Home Appliences</th><th>LifeStyle</th><th>Mobile</th>
+  </tr>
+  <tr>
+    <td>0001f06a-bd9a-4888-9cf9-0a094a15eaf2</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+  </tr>
+  <tr>
+    <td>00053812-fb74-4294-a9d1-5167c5a36c7d</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td>
+  </tr>
+</table>
+</section>
+<section class="card">
+<h3>4.3 Item Similarity Matrix Sample</h3>
+<table class="small-table">
+  <tr>
+    <th>Product_category</th><th>Affiliates</th><th>Books & General merchandise</th><th>Electronics</th><th>Furniture</th>
+    <th>GiftCard</th><th>Home</th><th>Home Appliences</th><th>LifeStyle</th><th>Mobile</th>
+  </tr>
+  <tr>
+    <td>Affiliates</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+  </tr>
+  <tr>
+    <td>Books & General merchandise</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+  </tr>
+</table>
+</section>
+<section class="card">
+<h3>4.4 Predicted Ratings Sample</h3>
+<table class="small-table">
+  <tr>
+    <th>Unique id</th><th>Affiliates</th><th>Books & General merchandise</th><th>Electronics</th><th>Furniture</th>
+    <th>GiftCard</th><th>Home</th><th>Home Appliences</th><th>LifeStyle</th><th>Mobile</th>
+  </tr>
+  <tr>
+    <td>0001f06a-bd9a-4888-9cf9-0a094a15eaf2</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+  </tr>
+  <tr>
+    <td>00053812-fb74-4294-a9d1-5167c5a36c7d</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td>
+  </tr>
+</table>
+</section>
+<section class="card">
+<h3>4.5 Top 3 Recommended Products per User</h3>
+<table class="small-table">
+  <tr>
+    <th>UserID</th><th>Top_Products</th>
+  </tr>
+  <tr>
+    <td>0001f06a-bd9a-4888-9cf9-0a094a15eaf2</td><td>['Books & General merchandise', 'Affiliates', 'Electronics']</td>
+  </tr>
+  <tr>
+    <td>00053812-fb74-4294-a9d1-5167c5a36c7d</td><td>['LifeStyle', 'Affiliates', 'Books & General merchandise']</td>
+  </tr>
+</table>
+</section>
+
+<section class="card">
+<h2>5. Key Metrics</h2>
+<ul>
+  <li>Total users processed: 50,000+</li>
+  <li>Total products: 10</li>
+  <li>User-Item matrix size: 50,000 x 10</li>
+  <li>Top 3 product recommendations generated per user</li>
+  <li>Recommendations saved successfully to 'week12_recommendations.csv'</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>6. Week 12 Milestone</h2>
+<ul>
+  <li>Loaded final features from Week 11 outputs</li>
+  <li>Built User-Item matrix for collaborative filtering</li>
+  <li>Calculated Item Similarity Matrix</li>
+  <li>Generated predicted ratings for all users</li>
+  <li>Extracted and saved top 3 recommended products per user</li>
+  <li>Completed Week 12 assignment successfully</li>
+</ul>
+</section>
+
+</div>
+</body>
+</html>

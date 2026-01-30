@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Science Project - Week 11 Report</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  h1 {
+    margin: 0;
+    color: #1d4ed8;
+    text-align: center;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5em;
+}
+
+h2 {
+    color: #1e40af;
+    margin-top: 30px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 5px;
+}
+
+h3 {
+    color: #2563eb;
+    margin-top: 20px;
+}
+  
+  h1 { text-align: center; margin-bottom: 40px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 40px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: #2980B9;
+    color: white;
+  }
+  tr:nth-child(even) { background-color: #f2f2f2; }
+  .small-table th, .small-table td { font-size: 12px; padding: 6px 8px; }
+  ul { margin: 0 0 20px 20px; }
+
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+.card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+@media(max-width: 600px) {
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+<h1>  Week 11 :  Natural Language Processing (NLP)</h1>
+<section class="card">
+<h2>1. Introduction</h2>
+<p>In Week 11, our focus is on building the **Customer Satisfaction Recommendation Model** using text data collected from customer surveys and order feedback. 
+This week emphasizes **data preprocessing, feature extraction using TF-IDF**, and preparing **final features for the recommendation engine**. 
+We aim to transform raw customer remarks into structured data suitable for machine learning models.</p>
+</section>
+<section class="card">
+<h2>2. Objectives</h2>
+<ul>
+  <li>Understand the dataset and explore relevant columns for Week 11.</li>
+  <li>Preprocess textual data for machine learning, including cleaning, tokenization, and normalization.</li>
+  <li>Apply TF-IDF vectorization to extract key features from customer remarks.</li>
+  <li>Prepare final feature set by combining TF-IDF features with categorical and numerical columns.</li>
+  <li>Demonstrate outputs and key metrics for the recommendation model readiness.</li>
+</ul>
+</section>
+<section class="card">
+
+<h2>3. Week 11 Tasks / Assignment</h2>
+<ul>
+  <li>Load and explore the dataset, focusing on columns like <b>Customer Remarks</b>, <b>Product Category</b>, and <b>CSAT Score</b>.</li>
+  <li>Perform text preprocessing: remove stopwords, punctuation, lowercase conversion, and stemming.</li>
+  <li>Generate TF-IDF features from cleaned customer remarks.</li>
+  <li>Prepare the final feature table for model input.</li>
+  <li>Visualize sample outputs: dataset columns, processed text, TF-IDF features, and final features.</li>
+  <li>Calculate key metrics such as number of records processed, number of unique words in TF-IDF, and feature matrix size.</li>
+</ul>
+</section>
+<section class="card">
+<h2>4. Outputs</h2>
+
+<h3>4.1 Dataset Columns</h3>
+<table>
+  <tr><th>Index</th><th>Column Name</th></tr>
+  <tr><td>0</td><td>Unique id</td></tr>
+  <tr><td>1</td><td>channel_name</td></tr>
+  <tr><td>2</td><td>category</td></tr>
+  <tr><td>3</td><td>Sub-category</td></tr>
+  <tr><td>4</td><td>Customer Remarks</td></tr>
+  <tr><td>5</td><td>Order_id</td></tr>
+  <tr><td>6</td><td>order_date_time</td></tr>
+  <tr><td>7</td><td>Issue_reported at</td></tr>
+  <tr><td>8</td><td>issue_responded</td></tr>
+  <tr><td>9</td><td>Survey_response_Date</td></tr>
+  <tr><td>10</td><td>Customer_City</td></tr>
+  <tr><td>11</td><td>Product_category</td></tr>
+  <tr><td>12</td><td>Item_price</td></tr>
+  <tr><td>13</td><td>connected_handling_time</td></tr>
+  <tr><td>14</td><td>Agent_name</td></tr>
+  <tr><td>15</td><td>Supervisor</td></tr>
+  <tr><td>16</td><td>Manager</td></tr>
+  <tr><td>17</td><td>Tenure Bucket</td></tr>
+  <tr><td>18</td><td>Agent Shift</td></tr>
+  <tr><td>19</td><td>CSAT Score</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h3>4.2 Sample Text Data</h3>
+<table>
+  <tr>
+    <th>Customer Remarks</th>
+    <th>Issue_reported at</th>
+  </tr>
+  <tr><td>Item delayed in delivery</td><td>01/08/2023 11:13</td></tr>
+  <tr><td>Received wrong product</td><td>01/08/2023 12:52</td></tr>
+  <tr><td>Packaging damaged</td><td>01/08/2023 20:16</td></tr>
+  <tr><td>Product not working</td><td>01/08/2023 20:56</td></tr>
+  <tr><td>Excellent service</td><td>01/08/2023 10:30</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h3>4.3 Processed Text Sample</h3>
+<table>
+  <tr>
+    <th>Customer Remarks</th>
+    <th>Processed_Remarks</th>
+  </tr>
+  <tr><td>Item delayed in delivery</td><td>item delay deliveri</td></tr>
+  <tr><td>Received wrong product</td><td>receiv wrong product</td></tr>
+  <tr><td>Packaging damaged</td><td>packag damag</td></tr>
+  <tr><td>Product not working</td><td>product work</td></tr>
+  <tr><td>Excellent service</td><td>excel servic</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h3>4.4 TF-IDF Features (Sample)</h3>
+<table class="small-table">
+  <tr>
+    <th>Unique id</th><th>item</th><th>delay</th><th>deliveri</th><th>receiv</th><th>wrong</th><th>product</th>
+  </tr>
+  <tr><td>7e9ae164</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+  <tr><td>b07ec1b0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>200814dd</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h3>4.5 Final Features for Recommendation Model (Sample)</h3>
+<table class="small-table">
+  <tr>
+    <th>Affiliates</th><th>Books & General merchandise</th><th>Electronics</th><th>Furniture</th><th>GiftCard</th><th>Home</th>
+  </tr>
+  <tr><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+  <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+  <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h2>5. Key Metrics</h2>
+<ul>
+  <li>Total records processed: 50,000+</li>
+  <li>Number of unique words (TF-IDF): 8,500+</li>
+  <li>Feature matrix size for recommendation model: 50,000 x 100</li>
+  <li>Columns used for modeling: Customer Remarks, Product Category, CSAT Score, TF-IDF Features</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>6. Week 11 Milestone</h2>
+<ul>
+  <li>Completed data exploration and preprocessing.</li>
+  <li>Generated TF-IDF feature matrix from customer remarks.</li>
+  <li>Prepared final feature table ready for input into recommendation model.</li>
+  <li>Visualized sample outputs to verify correctness.</li>
+  <li>Documented key metrics and insights for Week 11.</li>
+</ul>
+</section>
+    </div>
+</body>
+</html>
